@@ -170,6 +170,17 @@
             background: var(--bg); border-radius: 10px; padding: 10px 14px; margin-top: 8px; font-size: .9rem; }
   .bullet span { flex: 1; }
   .scanhead { font-weight: 700; font-size: .9rem; margin: 16px 0 8px; }
+
+  /* auto apply */
+  .applyjob { display: flex; gap: 12px; align-items: flex-start; border: 1px solid var(--line);
+              border-radius: 10px; padding: 10px 14px; background: var(--bg); margin-top: 8px; cursor: pointer; }
+  .applyjob:hover { border-color: var(--green-soft); }
+  .applyjob input[type=checkbox] { margin-top: 3px; width: auto; flex-shrink: 0; }
+  .applyjob-main { flex: 1; font-size: .9rem; }
+  .applybar { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
+  .packet { border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; margin-top: 14px; background: var(--bg); }
+  .packet h3 { margin: 0 0 10px; font-size: 1rem; }
+  .packet textarea { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .8rem; }
   #toast {
     position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
     background: var(--ink); color: var(--bg); padding: 10px 20px; border-radius: 10px;
@@ -188,6 +199,7 @@
     <nav id="nav">
       <button data-tab="find" class="on">🔎 Find Jobs</button>
       <button data-tab="tailor">✍️ Tailor</button>
+      <button data-tab="apply">🚀 Auto Apply</button>
       <button data-tab="orgs">🏥 Employers</button>
       <button data-tab="track">📋 Tracker</button>
       <button data-tab="lic">🪪 Licensing</button>
@@ -294,6 +306,41 @@
       <button class="btn" id="clCopy">Copy letter</button>
     </div>
     <textarea id="clOut" rows="14" placeholder="Your cover letter will appear here…" style="margin-top:12px"></textarea>
+  </div>
+</section>
+
+<!-- ============ AUTO APPLY ============ -->
+<section class="tab" id="tab-apply">
+  <div class="card">
+    <h2>Pick jobs to apply to</h2>
+    <p class="muted tight">Jobs you've marked <b>Saved</b> in the Tracker show up here. Select the ones you want packets for, then run it below.</p>
+    <div class="applybar">
+      <label style="margin:10px 0 0; font-weight:600; font-size:.9rem; display:flex; align-items:center; gap:8px; cursor:pointer">
+        <input type="checkbox" id="applySelectAll" style="width:auto"> Select all
+      </label>
+      <span class="muted" id="applyCount">0 selected</span>
+    </div>
+    <div id="applyList"></div>
+    <p class="muted" id="applyEmpty" style="margin-top:14px">No saved jobs yet. Head to <b>Find Jobs</b> to search, then save a posting — or add one directly in the <b>Tracker</b> tab with status &ldquo;Saved.&rdquo;</p>
+  </div>
+
+  <div class="card">
+    <h2>Tailoring</h2>
+    <p class="muted tight">Each selected job's packet uses its own role type from the Tracker (or auto-detects one from the job title if you left that blank). Optionally paste a job description below — its keywords get scanned against each job's role kit and woven into the tailored resume as a keyword line. Leave it blank to skip.</p>
+    <label>Paste job description (optional)</label>
+    <textarea id="applyJD" rows="6" placeholder="Paste a job posting here to pull in extra keywords…"></textarea>
+  </div>
+
+  <div class="card">
+    <h2>Run</h2>
+    <div class="row">
+      <button class="btn primary" id="applyRunBtn">🚀 Generate packets &amp; apply</button>
+      <button class="btn" id="applyDownloadAll">Download all (.txt)</button>
+    </div>
+    <div class="callout warn">
+      ⚠️ Honest limits: this is a static page — it can&rsquo;t press &ldquo;Submit&rdquo; on an employer&rsquo;s site for you. What it <i>does</i> do is prepare everything: a tailored resume, a cover letter, and an opened application tab for each selected job, so the actual apply is just pasting in and hitting submit — usually under a minute per job. Click <b>Mark applied ✓</b> on a packet once you've sent it, to log it back to the Tracker.
+    </div>
+    <div id="applyResults"></div>
   </div>
 </section>
 
@@ -750,6 +797,12 @@ function renderTracker() {
       <td><input class="note" data-i="${i}" type="text" value="${esc(j.notes || '')}" placeholder="notes…"></td>
       <td><button class="btn small danger del" data-i="${i}">✕</button></td>
     </tr>`).join('');
+
+  // Keep the Auto Apply tab's job list (Saved jobs + role-kit labels) in sync whenever the
+  // tracker changes — status edits, kit overrides, deletes, imports, or a Mark-applied action
+  // all flow back through here. renderApply is a function declaration defined further down in
+  // the script (Auto Apply section) but hoisted, so it always exists by the time this runs.
+  if (typeof renderApply === 'function') renderApply();
 }
 
 $('tAdd').addEventListener('click', () => {
@@ -851,8 +904,11 @@ $('pitchGen').addEventListener('click', () => {
   const school = degreePhrase(p);
   const grad = p.pGrad ? ` (${p.pGrad})` : '';
   const isCandidate = /candidate|eligible/i.test(p.pLicense || '');
-  const licNumPart = p.pLicNum ? ` (License #${p.pLicNum})` : '';
-  const licensePhrase = p.pLicense ? `a ${isCandidate ? p.pLicense : 'licensed ' + p.pLicense}${licNumPart}` : '';
+  // "LMSW (Louisiana)" + license # → "LMSW (Louisiana, License #19787)"
+  const licWithNum = p.pLicNum
+    ? (/\)$/.test(p.pLicense || '') ? p.pLicense.replace(/\)$/, `, License #${p.pLicNum})`) : `${p.pLicense} (License #${p.pLicNum})`)
+    : p.pLicense;
+  const licensePhrase = p.pLicense ? `a ${isCandidate ? licWithNum : 'licensed ' + licWithNum}` : '';
   const interests = p.pInterests ? ` specializing in ${p.pInterests}` : '';
   const fieldLine = p.pField ? ` Most recently: ${p.pField.split('\n')[0].replace(/^\d+\s*hrs?\s*[—-]\s*/i, '')}` : '';
   const bio = p.pBio ? ` ${p.pBio}` : '';
@@ -1047,13 +1103,15 @@ $('jdScan').addEventListener('click', () => {
 });
 
 // --- Cover letter ---
-$('clGen').addEventListener('click', () => {
-  const p = readProfile();
-  const kit = currentKit();
-  const title = $('clTitle').value.trim() || `${kit.label} position`;
-  const org = $('clOrg').value.trim() || '[Organization]';
-  const mgr = $('clMgr').value.trim();
-  const why = $('clWhy').value.trim();
+// Shared builder: used by the Tailor tab's generator below AND the Auto Apply tab, so the
+// letter structure (greeting → LMSW-forward opener → kit paragraph → experience → close) stays
+// identical in both places. Pure function of (profile, kit, {title, org, mgr, why}) — no DOM reads.
+function buildCoverLetter(p, kit, opts) {
+  opts = opts || {};
+  const title = (opts.title || '').trim() || `${kit.label} position`;
+  const org = (opts.org || '').trim() || '[Organization]';
+  const mgr = (opts.mgr || '').trim();
+  const why = (opts.why || '').trim();
   const name = p.pName || '[Your name]';
   const rawLic = (p.pLicense || '').trim();
   const isCandidate = /candidate|eligible/i.test(rawLic);
@@ -1068,8 +1126,7 @@ $('clGen').addEventListener('click', () => {
     ? `My experience includes ${field.split('\n').join('; ')}. That experience taught me to hit the ground running in a real caseload environment.`
     : 'My year of forensic social work experience gave me direct, hands-on experience with real caseloads, court-ready documentation, and interdisciplinary collaboration across legal, clinical, and community systems.';
   const whyLine = why ? ` I was especially excited to see ${why} — it aligns closely with where I want to grow.` : '';
-  $('clOut').value =
-`Dear ${mgr || 'Hiring Manager'},
+  return `Dear ${mgr || 'Hiring Manager'},
 
 I am writing to apply for the ${title} at ${org}. ${openLine}${whyLine}
 
@@ -1081,6 +1138,17 @@ I would welcome the chance to talk about how I can contribute to your team. Than
 
 Sincerely,
 ${name}${p.pEmail ? '\n' + p.pEmail : ''}`;
+}
+
+$('clGen').addEventListener('click', () => {
+  const p = readProfile();
+  const kit = currentKit();
+  $('clOut').value = buildCoverLetter(p, kit, {
+    title: $('clTitle').value.trim(),
+    org: $('clOrg').value.trim(),
+    mgr: $('clMgr').value.trim(),
+    why: $('clWhy').value.trim(),
+  });
   toast('Letter generated — personalize before sending');
 });
 $('clCopy').addEventListener('click', () => {
@@ -1089,13 +1157,203 @@ $('clCopy').addEventListener('click', () => {
   navigator.clipboard.writeText(txt).then(() => toast('Letter copied ✓'));
 });
 
+/* ============================= AUTO APPLY ============================= */
+
+// Auto-detect a role kit id from a job title when the tracker item has no explicit kit set.
+// Order matters — first matching rule wins (mirrors how these role types read in real postings).
+function detectKitId(title) {
+  const t = (title || '').toLowerCase();
+  if (/forensic|juvenile|court|mitigation/.test(t)) return 'forensic';
+  if (/hospital|medical|discharge/.test(t)) return 'medical';
+  if (/school/.test(t)) return 'school';
+  if (/hospice|palliative/.test(t)) return 'hospice';
+  if (/crisis|advocate|hotline/.test(t)) return 'crisis';
+  if (/child|family|welfare|foster/.test(t)) return 'child';
+  if (/coordinator|program/.test(t)) return 'program';
+  if (/mental|behavioral|therapist|counselor/.test(t)) return 'bh';
+  return 'case';
+}
+
+function resolveKit(item) {
+  const id = (item && item.kit) || detectKitId(item && item.title);
+  return KITS.find((k) => k.id === id) || KITS.find((k) => k.id === 'case') || KITS[0];
+}
+
+function savedTrackerJobs() { return tracker.filter((j) => j.status === 'Saved'); }
+
+// Which of this kit's keywords (+ the generic ATS pool) actually show up in a pasted JD.
+function jdKeywordsFor(kit, jdText) {
+  const jd = (jdText || '').trim().toLowerCase();
+  if (!jd) return [];
+  const pool = [...new Set([...kit.kw, ...GENERIC_KW])];
+  return pool.filter((k) => jd.includes(k.toLowerCase()));
+}
+
+// Builds the full tailored resume text for one job: real header/contact block from pResume,
+// the SUMMARY section swapped for this kit's merged summary, a per-job highlights block of the
+// kit's bullets, and (if JD keywords matched) a KEYWORDS line.
+function buildTailoredResume(item, kit, jdKeywords) {
+  const p = readProfile();
+  const base = p.pResume || '';
+  const tailoredSummary = tailorMerge(kit.summary);
+  const sumRe = /SUMMARY\n[\s\S]*?(?=\n\n[A-Z])/;
+  let resume;
+  if (sumRe.test(base)) {
+    resume = base.replace(sumRe, `SUMMARY\n${tailoredSummary}`);
+  } else if (base) {
+    resume = `SUMMARY\n${tailoredSummary}\n\n${base}`;
+  } else {
+    resume = `SUMMARY\n${tailoredSummary}`;
+  }
+  const title = (item && item.title) || 'This Role';
+  const org = (item && item.org) || 'Employer';
+  const highlights = kit.bullets.map((b) => `- ${b}`).join('\n');
+  resume += `\n\nTARGETED HIGHLIGHTS — ${title} @ ${org}\n${highlights}`;
+  if (jdKeywords && jdKeywords.length) {
+    resume += `\n\nKEYWORDS FROM POSTING: ${jdKeywords.join(', ')}`;
+  }
+  return resume;
+}
+
+function packetFilename(org, kind) {
+  const safe = (org || 'Employer').replace(/[^a-z0-9]+/gi, '_').replace(/^_+|_+$/g, '') || 'Employer';
+  return `Kai_Ridley_LMSW_${kind}_${safe}.txt`;
+}
+
+function generatePacket(item) {
+  const p = readProfile();
+  const kit = resolveKit(item);
+  const jdKeywords = jdKeywordsFor(kit, $('applyJD').value);
+  return {
+    item, kit, applied: false,
+    resume: buildTailoredResume(item, kit, jdKeywords),
+    letter: buildCoverLetter(p, kit, { title: item.title, org: item.org }),
+  };
+}
+
+let applySelected = new Set();
+let applyPackets = [];
+
+function renderApply() {
+  const jobs = savedTrackerJobs();
+  const listEl = $('applyList');
+  const emptyEl = $('applyEmpty');
+  const validIds = new Set(jobs.map((j) => j.id));
+  [...applySelected].forEach((id) => { if (!validIds.has(id)) applySelected.delete(id); });
+
+  if (!jobs.length) {
+    listEl.innerHTML = '';
+    listEl.style.display = 'none';
+    emptyEl.style.display = '';
+  } else {
+    emptyEl.style.display = 'none';
+    listEl.style.display = '';
+    listEl.innerHTML = jobs.map((j) => {
+      const kit = resolveKit(j);
+      const auto = !j.kit;
+      return `
+      <label class="applyjob">
+        <input type="checkbox" class="applyChk" data-id="${esc(j.id)}" ${applySelected.has(j.id) ? 'checked' : ''}>
+        <span class="applyjob-main">
+          <b>${esc(j.title)}</b> <span class="muted">— ${esc(j.org)}${j.loc ? ', ' + esc(j.loc) : ''}</span><br>
+          <span class="muted" style="font-size:.8rem">${auto ? 'auto-detected role type: ' : 'role type: '}${esc(kit.label)}
+            ${j.link ? ' · <span style="color:var(--sky)">posting link saved</span>' : ' · no posting link saved'}</span>
+        </span>
+      </label>`;
+    }).join('');
+  }
+  $('applySelectAll').checked = jobs.length > 0 && jobs.every((j) => applySelected.has(j.id));
+  $('applyCount').textContent = `${applySelected.size} selected`;
+}
+
+$('applyList').addEventListener('change', (e) => {
+  if (!e.target.classList.contains('applyChk')) return;
+  const id = e.target.dataset.id;
+  if (e.target.checked) applySelected.add(id); else applySelected.delete(id);
+  const jobs = savedTrackerJobs();
+  $('applySelectAll').checked = jobs.length > 0 && jobs.every((j) => applySelected.has(j.id));
+  $('applyCount').textContent = `${applySelected.size} selected`;
+});
+$('applySelectAll').addEventListener('change', (e) => {
+  const jobs = savedTrackerJobs();
+  if (e.target.checked) jobs.forEach((j) => applySelected.add(j.id));
+  else applySelected.clear();
+  renderApply();
+});
+
+function renderApplyResults() {
+  const el = $('applyResults');
+  if (!applyPackets.length) { el.innerHTML = ''; return; }
+  el.innerHTML = applyPackets.map((pk, i) => `
+    <div class="packet">
+      <h3>${esc(pk.item.title)} — ${esc(pk.item.org)} <span class="muted" style="font-weight:400">(${esc(pk.kit.label)})</span></h3>
+      <label>Tailored resume</label>
+      <textarea rows="9" readonly>${esc(pk.resume)}</textarea>
+      <label>Cover letter</label>
+      <textarea rows="9" readonly>${esc(pk.letter)}</textarea>
+      <div class="row" style="margin-top:10px">
+        <button class="btn" data-act="copyResume" data-i="${i}">Copy resume</button>
+        <button class="btn" data-act="copyLetter" data-i="${i}">Copy letter</button>
+        <button class="btn" data-act="dlResume" data-i="${i}">Download resume (.txt)</button>
+        <button class="btn" data-act="dlLetter" data-i="${i}">Download letter (.txt)</button>
+        ${pk.item.link ? `<a class="btn" href="${esc(pk.item.link)}" target="_blank" rel="noopener">Open posting ↗</a>` : ''}
+        <button class="btn primary" data-act="markApplied" data-i="${i}" ${pk.applied ? 'disabled' : ''}>${pk.applied ? 'Applied ✓' : 'Mark applied ✓'}</button>
+      </div>
+    </div>`).join('');
+}
+
+$('applyResults').addEventListener('click', (e) => {
+  const btn = e.target.closest('button[data-act]');
+  if (!btn) return;
+  const pk = applyPackets[+btn.dataset.i];
+  if (!pk) return;
+  const act = btn.dataset.act;
+  if (act === 'copyResume') navigator.clipboard.writeText(pk.resume).then(() => toast('Resume copied ✓'));
+  if (act === 'copyLetter') navigator.clipboard.writeText(pk.letter).then(() => toast('Letter copied ✓'));
+  if (act === 'dlResume') download(packetFilename(pk.item.org, 'Resume'), pk.resume, 'text/plain');
+  if (act === 'dlLetter') download(packetFilename(pk.item.org, 'CoverLetter'), pk.letter, 'text/plain');
+  if (act === 'markApplied') {
+    const t = tracker.find((j) => j.id === pk.item.id);
+    if (!t) return;
+    t.status = 'Applied';
+    save(LS.tracker, tracker);
+    pk.applied = true;
+    applySelected.delete(t.id);
+    renderTracker(); // also re-renders the Auto Apply job list (renderApply is called at the end of renderTracker)
+    renderApplyResults();
+    toast(`Marked "${t.title}" as Applied ✓`);
+  }
+});
+
+$('applyRunBtn').addEventListener('click', () => {
+  const jobs = savedTrackerJobs().filter((j) => applySelected.has(j.id));
+  if (!jobs.length) return toast('Select at least one saved job first');
+  applyPackets = jobs.map(generatePacket);
+  renderApplyResults();
+  // Staggered tab-opens, same pattern as "Open all boards" on the Find Jobs tab.
+  jobs.forEach((j, i) => { if (j.link) setTimeout(() => window.open(j.link, '_blank'), i * 150); });
+  toast(`Generated ${applyPackets.length} packet${applyPackets.length === 1 ? '' : 's'} ✓ — personalize, then send`);
+});
+
+$('applyDownloadAll').addEventListener('click', () => {
+  if (!applyPackets.length) return toast('Generate packets first');
+  const divider = '\n\n' + '='.repeat(70) + '\n\n';
+  const text = applyPackets.map((pk) =>
+    `${pk.item.title} — ${pk.item.org} (${pk.kit.label})\n` +
+    `${'-'.repeat(40)}\nRESUME\n${'-'.repeat(40)}\n${pk.resume}\n\n` +
+    `${'-'.repeat(40)}\nCOVER LETTER\n${'-'.repeat(40)}\n${pk.letter}`
+  ).join(divider);
+  download('Kai_Ridley_application_packets.txt', text, 'text/plain');
+});
+
 /* ============================= INIT ============================= */
 
 loadProfile();
 renderFind();
 renderOrgs();
-renderTracker();
+renderTracker(); // also renders Auto Apply's job list (see end of renderTracker)
 renderTailor();
+renderApply();
 </script>
 </body>
 </html>
