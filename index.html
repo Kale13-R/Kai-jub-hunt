@@ -184,7 +184,7 @@
 <header>
   <div class="wrap">
     <h1>Kai&rsquo;s Job Hunt 🌊</h1>
-    <p>Entry-level MSW jobs · New Orleans · Chicago · Southern California</p>
+    <p>LMSW jobs · New Orleans · Chicago · Southern California</p>
     <nav id="nav">
       <button data-tab="find" class="on">🔎 Find Jobs</button>
       <button data-tab="tailor">✍️ Tailor</button>
@@ -202,7 +202,7 @@
 <section class="tab on" id="tab-find">
   <div class="card">
     <h2>Build a search</h2>
-    <p class="muted tight">Pick a city and a role, and this launches pre-tuned searches on every major job board — keywords already dialed in for new-grad MSW roles.</p>
+    <p class="muted tight">Pick a city and a role, and this launches pre-tuned searches on every major job board — keywords already dialed in for licensed-LMSW roles.</p>
 
     <h3>Where?</h3>
     <div class="chips" id="regionChips"></div>
@@ -232,12 +232,13 @@
   </div>
 
   <div class="card">
-    <h2>New-grad search tips</h2>
+    <h2>Search tips for a licensed LMSW</h2>
     <ul class="muted" style="font-size:.92rem; margin:8px 0; padding-left:20px">
-      <li><b>Search by license, not just title.</b> Try &ldquo;LMSW&rdquo;, &ldquo;LSW&rdquo;, or &ldquo;ASW&rdquo; as keywords — postings that list the provisional license are, by definition, open to new grads.</li>
-      <li><b>&ldquo;Case manager&rdquo; is the biggest entry door.</b> Hospitals, nonprofits, and county agencies hire far more case managers than &ldquo;social workers,&rdquo; and most only require the MSW.</li>
-      <li><b>County and state government hires constantly</b> (child welfare, public mental health) and rarely requires experience — check the government boards below and the Employers tab.</li>
-      <li><b>Your field placements count as experience.</b> List practicum hours and settings on your resume like jobs — agencies expect it from MSW grads.</li>
+      <li><b>Search &ldquo;LMSW&rdquo; directly, not just &ldquo;LSW&rdquo;/&ldquo;ASW.&rdquo;</b> She holds the license in hand (Louisiana, #19787, exp. 08/2026) — postings that say &ldquo;LMSW required&rdquo; are a fit most new grads can&rsquo;t claim.</li>
+      <li><b>&ldquo;Case manager&rdquo; is still the biggest entry door.</b> Hospitals, nonprofits, and county agencies hire far more case managers than &ldquo;social workers,&rdquo; and most only require the MSW/LMSW.</li>
+      <li><b>County and state government hires constantly</b> (child welfare, public mental health) and rarely requires much tenure — check the government boards below and the Employers tab.</li>
+      <li><b>Lead with the forensic internship.</b> Her Louisiana Center for Children&rsquo;s Rights placement (Jan&ndash;Dec 2025) is real forensic / juvenile-justice experience with youth in detention and community settings — list it as experience, not a practicum.</li>
+      <li><b>Forensic and court-adjacent roles fit her background.</b> Mitigation specialist, juvenile court, and public defender social-work roles line up with her forensic/juvenile-justice experience — use the dedicated role chip below.</li>
       <li><b>Set alerts.</b> Once a search looks right on Indeed/LinkedIn, save it as a daily email alert so postings come to you.</li>
     </ul>
   </div>
@@ -509,15 +510,16 @@ const REGIONS = [
 ];
 
 const ROLES = [
-  { id: 'case',    label: 'Case Manager',            q: '"case manager" OR "case management" MSW' },
+  { id: 'forensic', label: 'Forensic / Juvenile Justice', q: '"forensic social worker" OR "juvenile justice" OR "mitigation specialist"' },
+  { id: 'case',    label: 'Case Manager',            q: '"case manager" OR "case management" MSW OR LMSW' },
   { id: 'medical', label: 'Medical / Hospital SW',   q: '"medical social worker" OR "hospital social worker"' },
-  { id: 'bh',      label: 'Behavioral / Mental Health', q: '"behavioral health" OR "mental health" "social worker" MSW' },
+  { id: 'bh',      label: 'Behavioral / Mental Health', q: '"behavioral health" OR "mental health" "social worker" MSW OR LMSW' },
   { id: 'school',  label: 'School Social Work',      q: '"school social worker"' },
   { id: 'child',   label: 'Child Welfare & Family',  q: '"child welfare" OR "family services" social worker' },
   { id: 'hospice', label: 'Hospice / Palliative',    q: '"hospice social worker" OR "palliative care" social worker' },
   { id: 'crisis',  label: 'Crisis / Advocacy',       q: '"crisis counselor" OR "victim advocate" OR "crisis intervention"' },
   { id: 'program', label: 'Program Coordinator',     q: '"program coordinator" OR "program manager" "social services"' },
-  { id: 'newgrad', label: 'By license (new grad)',   q: 'LMSW OR LSW OR ASW OR "MSW required"' },
+  { id: 'newgrad', label: 'By license (LMSW/LSW/ASW)', q: 'LMSW OR LSW OR ASW OR "MSW required"' },
   { id: 'any',     label: 'Anything MSW',            q: 'MSW "social worker"' },
 ];
 
