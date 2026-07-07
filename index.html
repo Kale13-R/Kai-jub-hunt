@@ -391,17 +391,17 @@
 <section class="tab" id="tab-me">
   <div class="card">
     <h2>My profile</h2>
-    <p class="muted tight">Drop your info here as you go — grad year, bio, resume text, links. It saves in this browser, feeds the pitch generator below, and exports to a file you can re-import anywhere.</p>
+    <p class="muted tight">Your info is pre-loaded from Kai's resume as a licensed LMSW — edit anything below to keep it current. It saves in this browser, feeds the pitch generator below, and exports to a file you can re-import anywhere.</p>
     <div class="grid2">
-      <div><label>Name</label><input type="text" id="pName" placeholder="Kai …"></div>
-      <div><label>Email</label><input type="email" id="pEmail"></div>
+      <div><label>Name</label><input type="text" id="pName" placeholder="Full name" value="Kai Ridley"></div>
+      <div><label>Email</label><input type="email" id="pEmail" value="kainridley@gmail.com"></div>
       <div><label>Degree &amp; school</label><input type="text" id="pSchool" value="MSW, Tulane University"></div>
-      <div><label>Graduation (month/year)</label><input type="text" id="pGrad" placeholder="May 2026"></div>
+      <div><label>Graduation (month/year)</label><input type="text" id="pGrad" placeholder="e.g. December 2025" value="December 2025"></div>
       <div><label>License status</label>
         <select id="pLicense">
           <option value="">— not started yet —</option>
           <option>LMSW candidate (Louisiana)</option>
-          <option>LMSW (Louisiana)</option>
+          <option selected>LMSW (Louisiana)</option>
           <option>LSW candidate (Illinois)</option>
           <option>LSW (Illinois)</option>
           <option>ASW-eligible (California)</option>
@@ -409,16 +409,61 @@
           <option>Other / multiple</option>
         </select>
       </div>
-      <div><label>LinkedIn / portfolio URL</label><input type="url" id="pLink" placeholder="https://linkedin.com/in/…"></div>
+      <div><label>License #</label><input type="text" id="pLicNum" placeholder="e.g. 19787" value="19787"></div>
+      <div><label>License expiration</label><input type="text" id="pLicExp" placeholder="e.g. 08/2026" value="08/2026"></div>
+      <div><label>LinkedIn / portfolio URL</label><input type="url" id="pLink" placeholder="https://linkedin.com/in/kairidley"></div>
     </div>
     <label>Interests &amp; specializations (comma-separated)</label>
-    <input type="text" id="pInterests" placeholder="e.g. medical social work, trauma-informed care, youth &amp; families">
+    <input type="text" id="pInterests" placeholder="e.g. medical social work, trauma-informed care, youth &amp; families" value="forensic social work, juvenile justice, trauma-informed care, case management, crisis intervention">
     <label>Short bio</label>
-    <textarea id="pBio" rows="4" placeholder="2–4 sentences about you: populations you've worked with, what you're looking for, languages, etc."></textarea>
+    <textarea id="pBio" rows="4" placeholder="2–4 sentences about you: populations you've worked with, what you're looking for, languages, etc.">Licensed Master Social Worker (LMSW) specializing in case management, crisis intervention, and trauma-informed care coordination. My forensic social work internship with the Louisiana Center for Children's Rights gave me direct experience supporting justice-involved youth across detention and community settings, conducting intakes, assessments, and coordinated care planning. I bring a research background in trauma-informed practice and equity-focused program design to every caseload.</textarea>
     <label>Field placements / practicum experience</label>
-    <textarea id="pField" rows="3" placeholder="e.g. 600 hrs — Children's Hospital New Orleans, inpatient psych unit; 400 hrs — community mental health clinic"></textarea>
+    <textarea id="pField" rows="3" placeholder="e.g. 600 hrs — Children's Hospital New Orleans, inpatient psych unit; 400 hrs — community mental health clinic">Jan 2025–Dec 2025 — Forensic Social Work Intern, Louisiana Center for Children's Rights: 50+ client intakes and psychosocial assessments, caseload of 10+ clients with weekly visits across detention and community settings.</textarea>
     <label>Resume (paste plain text — used for quick copy when filling applications)</label>
-    <textarea id="pResume" rows="8" placeholder="Paste your resume text here…"></textarea>
+    <textarea id="pResume" rows="8" placeholder="Paste your resume text here…">Kai Ridley, LMSW
+New Orleans, LA | kainridley@gmail.com | (213) 309-7776
+
+SUMMARY
+Licensed Master Social Worker specializing in case management, crisis intervention, and trauma-informed care coordination.
+
+EXPERIENCE
+
+Forensic Social Work Intern — Louisiana Center for Children's Rights (Jan 2025–Dec 2025)
+- Conducted 50+ client intakes and psychosocial assessments informing individualized treatment and legal support strategies
+- Managed a caseload of 10+ clients with weekly visits across detention and community settings
+- Connected 20+ clients to community resources including therapy, academic accommodations, and medical services
+- Coordinated with attorneys, clinicians, and community organizations to ensure continuity of care
+
+Post-Baccalaureate Fellow / Undergraduate Research Assistant — XULA Center for Traumatic Stress Research (Jan 2022–Jul 2024)
+- Conducted research on improving African American student representation in STEM through wraparound counseling
+- Created and executed 30+ post social media campaign
+- Led independent research on empowering adolescent girls in STEM
+
+Youth Participatory Action Research (YPAR) Intern — Tulane University &amp; Coalition of Compassionate Schools (Aug 2023–Jun 2024)
+- Mentored a cohort of 10 students through policy-focused research on student-teacher relationships
+- Supported research on trauma-informed practices in middle schools
+
+Research Assistant — Xavier University of Louisiana &amp; Tulane School of Public Health (Aug 2022–May 2024)
+- Surveyed 100+ restaurants on nutrition environments
+- Contributed to passage of the Healthy Kids Meals Beverage Ordinance
+
+EDUCATION
+MSW, Tulane University School of Social Work — December 2025
+Volunteer, Peace Center After School Program
+
+BS Psychology, Xavier University of Louisiana — December 2023
+Honors in Sociology; Recording Secretary, inaugural XULA Collegiate Section of NCNW
+
+CERTIFICATIONS &amp; PRESENTATIONS
+Licensed Master Social Worker (LMSW), Louisiana State Board of Social Work Examiners — License #19787, expires 08/2026
+
+Dr. Olatunji-West, C., Nguyen, C., &amp; Ridley, K. (2023, October). "Disrupting Obstacles to Equity In STEM: A Wraparound Approach." Louisiana Counseling Association Annual Conference, Baton Rouge, LA.
+
+SKILLS
+Project Coordination &amp; Administrative Support — workflow management, documentation, strategic planning
+Case Management &amp; Documentation — intake, assessments, confidential record handling
+Data Analysis &amp; Reporting — quantitative/qualitative analysis, compliance tracking, data entry
+Technical — Microsoft Office Suite (Excel, Word, Outlook), Google Workspace</textarea>
     <div class="row" style="margin-top:14px">
       <button class="btn primary" id="pSave">Save profile</button>
       <button class="btn" id="pExport">Export JSON</button>
@@ -728,12 +773,14 @@ $('tImport').addEventListener('change', (e) => {
 
 /* ============================= PROFILE ============================= */
 
-const P_FIELDS = ['pName', 'pEmail', 'pSchool', 'pGrad', 'pLicense', 'pLink', 'pInterests', 'pBio', 'pField', 'pResume'];
+const P_FIELDS = ['pName', 'pEmail', 'pSchool', 'pGrad', 'pLicense', 'pLicNum', 'pLicExp', 'pLink', 'pInterests', 'pBio', 'pField', 'pResume'];
 
 function loadProfile() {
   const p = load(LS.profile, null);
   if (!p) return;
-  P_FIELDS.forEach((f) => { if (p[f] != null) $(f).value = p[f]; });
+  // Only overwrite a baked-in default when the saved profile actually has a value for it —
+  // an empty saved field (e.g. from an older save) shouldn't blank out Kai's pre-loaded resume data.
+  P_FIELDS.forEach((f) => { if (p[f]) $(f).value = p[f]; });
 }
 function readProfile() {
   const p = {};
@@ -768,13 +815,18 @@ $('pitchGen').addEventListener('click', () => {
   const name = p.pName || '[Your name]';
   const school = degreePhrase(p);
   const grad = p.pGrad ? ` (${p.pGrad})` : '';
-  const lic = p.pLicense ? ` I’m currently ${/candidate|eligible/i.test(p.pLicense) ? 'an ' + p.pLicense : 'licensed as ' + p.pLicense}.` : '';
-  const interests = p.pInterests ? ` with a focus on ${p.pInterests}` : '';
-  const field = p.pField ? ` During my program I completed field placements including ${p.pField.split('\n')[0].replace(/^\d+\s*hrs?\s*[—-]\s*/i, '')}.` : '';
+  const isCandidate = /candidate|eligible/i.test(p.pLicense || '');
+  const licNumPart = p.pLicNum ? ` (License #${p.pLicNum})` : '';
+  const licensePhrase = p.pLicense ? `a ${isCandidate ? p.pLicense : 'licensed ' + p.pLicense}${licNumPart}` : '';
+  const interests = p.pInterests ? ` specializing in ${p.pInterests}` : '';
+  const fieldLine = p.pField ? ` Most recently: ${p.pField.split('\n')[0].replace(/^\d+\s*hrs?\s*[—-]\s*/i, '')}` : '';
   const bio = p.pBio ? ` ${p.pBio}` : '';
+  const lead = licensePhrase
+    ? `Hi, I’m ${name}, ${licensePhrase}${interests}, with a ${school}${grad}.`
+    : `Hi, I’m ${name}. I hold a ${school}${grad}${interests}.`;
   $('pitchOut').value =
-    `Hi, I’m ${name}. I recently earned my ${school}${grad}${interests}.${field}${lic}${bio} ` +
-    `I’m excited to bring my training and energy to a team doing meaningful work, and I’d love to talk about how I can contribute to your organization.`;
+    `${lead}${fieldLine}${bio} ` +
+    `I’m excited to bring my training and hands-on experience to a team doing meaningful work, and I’d love to talk about how I can contribute to your organization.`;
   toast('Pitch generated — edit to taste');
 });
 $('pitchCopy').addEventListener('click', () => {
