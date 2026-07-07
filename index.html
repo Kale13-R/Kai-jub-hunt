@@ -301,7 +301,7 @@
 <section class="tab" id="tab-orgs">
   <div class="card">
     <h2>MSW-friendly employers</h2>
-    <p class="muted tight">Hand-picked organizations in each region that regularly hire new MSW grads. Apply directly — direct applications often beat job-board ones. Links go to each org&rsquo;s careers/main page.</p>
+    <p class="muted tight">Hand-picked organizations in each region that regularly hire LMSWs / early-career MSWs. Apply directly — direct applications often beat job-board ones. Links go to each org&rsquo;s careers/main page.</p>
     <div class="chips" id="orgRegionChips"></div>
     <div class="chips" id="orgTypeChips"></div>
     <div class="orgs" id="orgList"></div>
@@ -543,13 +543,13 @@ const BOARDS = [
       `https://www.usajobs.gov/Search/Results?k=${q}&l=${l}` },
 ];
 
-// type: health | gov | school | nonprofit
+// type: health | gov | school | nonprofit | justice
 const ORGS = {
   nola: [
     { n: 'Ochsner Health', t: 'health', d: 'Largest LA health system — medical SW, case management, behavioral health.', u: 'https://careers.ochsner.org' },
-    { n: 'LCMC Health (incl. Children’s Hospital)', t: 'health', d: 'UMC, Children’s, Touro & more — frequent new-grad medical SW openings.', u: 'https://careers.lcmchealth.org' },
+    { n: 'LCMC Health (incl. Children’s Hospital)', t: 'health', d: 'UMC, Children’s, Touro & more — frequent openings for early-career MSWs/LMSWs.', u: 'https://careers.lcmchealth.org' },
     { n: 'Tulane University', t: 'school', d: 'Staff roles: student support, community health programs, research.', u: 'https://jobs.tulane.edu' },
-    { n: 'Louisiana DCFS / State Civil Service', t: 'gov', d: 'Child welfare specialists — hires new MSWs continuously statewide.', u: 'https://www.governmentjobs.com/careers/louisiana' },
+    { n: 'Louisiana DCFS / State Civil Service', t: 'gov', d: 'Child welfare specialists — hires early-career MSWs/LMSWs continuously statewide.', u: 'https://www.governmentjobs.com/careers/louisiana' },
     { n: 'Metropolitan Human Services District', t: 'gov', d: 'Public behavioral health for Orleans/Plaquemines/St. Bernard.', u: 'https://www.mhsdla.org' },
     { n: 'NOLA Public Schools', t: 'school', d: 'School social workers & student support across charter networks.', u: 'https://nolapublicschools.com' },
     { n: 'CrescentCare', t: 'nonprofit', d: 'Community health center — case management, behavioral health.', u: 'https://www.crescentcare.org' },
@@ -561,16 +561,19 @@ const ORGS = {
     { n: 'VIA LINK (988 line)', t: 'nonprofit', d: 'Crisis line & referral services — great crisis-intervention entry.', u: 'https://vialink.org' },
     { n: 'Jewish Family Service of Greater NO', t: 'nonprofit', d: 'Counseling & senior services.', u: 'https://jfsneworleans.org' },
     { n: 'Boys Town Louisiana', t: 'nonprofit', d: 'In-home family services, youth programs.', u: 'https://www.boystown.org' },
+    { n: 'Louisiana Center for Children’s Rights', t: 'justice', d: 'Juvenile defense & forensic social work nonprofit — Kai’s internship site; a warm network for referrals & roles.', u: 'https://www.lakidsrights.org' },
+    { n: 'Orleans Public Defenders', t: 'justice', d: 'Public defender’s office with in-house social workers doing client advocacy & mitigation — a strong fit for forensic SW background.', u: 'https://www.opdla.org' },
+    { n: 'Youth Empowerment Project', t: 'justice', d: 'Case management & mentoring for court-involved and opportunity youth in New Orleans.', u: 'https://www.youthempowermentproject.org' },
   ],
   chi: [
-    { n: 'Illinois DCFS', t: 'gov', d: 'Child protection specialists — large, constant new-grad hiring.', u: 'https://dcfs.illinois.gov' },
+    { n: 'Illinois DCFS', t: 'gov', d: 'Child protection specialists — large, constant early-career MSW/LMSW hiring.', u: 'https://dcfs.illinois.gov' },
     { n: 'Chicago Public Schools', t: 'school', d: 'School SW (needs PEL endorsement) plus non-licensed student support roles.', u: 'https://www.cps.edu/careers' },
     { n: 'Cook County Health', t: 'health', d: 'Public hospital system — medical SW & care coordination.', u: 'https://cookcountyhealth.org' },
     { n: 'Rush University Medical Center', t: 'health', d: 'Medical & psych social work.', u: 'https://jobs.rush.edu' },
     { n: 'Northwestern Medicine', t: 'health', d: 'Care management & behavioral health across the metro.', u: 'https://jobs.nm.org' },
     { n: 'UChicago Medicine', t: 'health', d: 'South Side academic medical center.', u: 'https://www.uchicagomedicine.org' },
     { n: 'Lurie Children’s Hospital', t: 'health', d: 'Pediatric social work.', u: 'https://www.luriechildrens.org' },
-    { n: 'Thresholds', t: 'nonprofit', d: 'One of IL’s largest MH providers — hires many new MSWs.', u: 'https://www.thresholds.org' },
+    { n: 'Thresholds', t: 'nonprofit', d: 'One of IL’s largest MH providers — hires many early-career MSWs/LMSWs.', u: 'https://www.thresholds.org' },
     { n: 'Metropolitan Family Services', t: 'nonprofit', d: 'Family support, counseling, legal aid across Chicagoland.', u: 'https://www.metrofamily.org' },
     { n: 'UCAN', t: 'nonprofit', d: 'Youth trauma-focused services, foster care.', u: 'https://ucanchicago.org' },
     { n: 'Lutheran Social Services of Illinois', t: 'nonprofit', d: 'Foster care, MH, substance use statewide.', u: 'https://www.lssi.org' },
@@ -579,6 +582,7 @@ const ORGS = {
     { n: 'Youth Guidance', t: 'nonprofit', d: 'School-based programs (BAM, WOW) — school SW without the PEL.', u: 'https://www.youth-guidance.org' },
     { n: 'Casa Central', t: 'nonprofit', d: 'Latino-serving social services agency.', u: 'https://www.casacentral.org' },
     { n: 'One Hope United', t: 'nonprofit', d: 'Child & family services, early learning.', u: 'https://onehopeunited.org' },
+    { n: 'Juvenile Protective Association', t: 'justice', d: 'Chicago’s oldest child welfare agency — clinical & forensic services for court-involved youth and families.', u: 'https://www.jpachicago.org' },
   ],
   socal: [
     { n: 'LA County (DCFS, DMH, DHS)', t: 'gov', d: 'The largest MSW employer in the country — children’s SW & psychiatric SW tracks.', u: 'https://www.governmentjobs.com/careers/lacounty' },
@@ -599,6 +603,7 @@ const ORGS = {
     { n: 'Wellnest', t: 'nonprofit', d: 'Emotional health for kids & young adults (South LA).', u: 'https://wellnestla.org' },
     { n: 'Father Joe’s Villages', t: 'nonprofit', d: 'Homeless services in San Diego.', u: 'https://my.neighbor.org' },
     { n: 'Union Rescue Mission', t: 'nonprofit', d: 'Skid Row homeless services (LA).', u: 'https://urm.org' },
+    { n: 'Anti-Recidivism Coalition', t: 'justice', d: 'Reentry & juvenile-justice-impacted community support across SoCal — case management & advocacy, forensic-SW aligned.', u: 'https://antirecidivism.org' },
   ],
 };
 
@@ -608,6 +613,7 @@ const ORG_TYPES = [
   { id: 'gov', label: '🏛️ Government' },
   { id: 'school', label: '🎓 Schools/Edu' },
   { id: 'nonprofit', label: '🤝 Nonprofit' },
+  { id: 'justice', label: '⚖️ Justice/Advocacy' },
 ];
 
 const STATUSES = ['Saved', 'Applied', 'Interviewing', 'Offer 🎉', 'Rejected'];
@@ -687,7 +693,7 @@ const ORG_REGIONS = [
   { id: 'chi', label: 'Chicago' },
   { id: 'socal', label: 'Southern California' },
 ];
-const TYPE_LABEL = { health: 'Healthcare', gov: 'Government', school: 'Schools/Edu', nonprofit: 'Nonprofit' };
+const TYPE_LABEL = { health: 'Healthcare', gov: 'Government', school: 'Schools/Edu', nonprofit: 'Nonprofit', justice: 'Justice/Advocacy' };
 
 function renderOrgs() {
   chipRow('orgRegionChips', ORG_REGIONS, ui.orgRegion === 'la' || ui.orgRegion === 'oc' || ui.orgRegion === 'sd' || ui.orgRegion === 'ie' ? 'socal' : ui.orgRegion, (id) => { ui.orgRegion = id; save(LS.ui, ui); renderOrgs(); });
