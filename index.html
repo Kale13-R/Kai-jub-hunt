@@ -312,7 +312,7 @@
 <section class="tab" id="tab-track">
   <div class="card">
     <h2>Application tracker</h2>
-    <p class="muted tight">Everything saves automatically in this browser. Use Export to back it up or move it to another device.</p>
+    <p class="muted tight">Everything saves automatically in this browser. Use Export to back it up or move it to another device. Jobs saved here show up in the Auto Apply tab, where you can generate a tailored resume + cover letter and apply in one pass.</p>
     <div class="counts" id="trackCounts"></div>
     <h3>Add a job</h3>
     <div class="grid2">
@@ -320,6 +320,7 @@
       <div><label>Organization</label><input type="text" id="tOrg" placeholder="Ochsner Health"></div>
       <div><label>Location</label><input type="text" id="tLoc" placeholder="New Orleans, LA"></div>
       <div><label>Posting link</label><input type="url" id="tLink" placeholder="https://…"></div>
+      <div><label>Role type (for tailoring)</label><select id="tKit"><option value="">— auto-detect —</option></select></div>
     </div>
     <div class="row" style="margin-top:12px">
       <button class="btn primary" id="tAdd">＋ Add job</button>
@@ -329,7 +330,7 @@
     </div>
     <div class="tablewrap">
       <table id="tTable" style="display:none">
-        <thead><tr><th>Job</th><th>Location</th><th>Status</th><th>Added</th><th>Notes</th><th></th></tr></thead>
+        <thead><tr><th>Job</th><th>Location</th><th>Status</th><th>Role type</th><th>Added</th><th>Notes</th><th></th></tr></thead>
         <tbody id="tBody"></tbody>
       </table>
     </div>
@@ -711,7 +712,22 @@ function renderOrgs() {
 
 /* ============================= TRACKER ============================= */
 
+let tIdSeq = 0;
+function nextTrackId() { return `${Date.now()}:${tIdSeq++}`; }
+
 function renderTracker() {
+  // One-time populate of the role-type dropdown from KITS (declared later in the script,
+  // but this function only runs once INIT calls it, after KITS is initialized).
+  const kitSel = $('tKit');
+  if (kitSel && kitSel.options.length < 2) {
+    kitSel.insertAdjacentHTML('beforeend', KITS.map((k) => `<option value="${esc(k.id)}">${esc(k.label)}</option>`).join(''));
+  }
+
+  // Backfill ids for legacy items so the Auto Apply tab always has something stable to key on.
+  let backfilled = false;
+  tracker.forEach((j) => { if (!j.id) { j.id = nextTrackId(); backfilled = true; } });
+  if (backfilled) save(LS.tracker, tracker);
+
   const counts = {};
   STATUSES.forEach((s) => (counts[s] = 0));
   tracker.forEach((j) => { counts[j.status] = (counts[j.status] || 0) + 1; });
@@ -727,6 +743,9 @@ function renderTracker() {
       <td>${esc(j.loc)}</td>
       <td><select data-i="${i}" class="statusSel" style="border-left:4px solid ${STATUS_COLORS[j.status] || 'var(--line)'}">
         ${STATUSES.map((s) => `<option ${s === j.status ? 'selected' : ''}>${s}</option>`).join('')}</select></td>
+      <td><select data-i="${i}" class="kitSel">
+        <option value="">— auto-detect —</option>
+        ${KITS.map((k) => `<option value="${esc(k.id)}" ${k.id === j.kit ? 'selected' : ''}>${esc(k.label)}</option>`).join('')}</select></td>
       <td class="muted">${esc(j.added)}</td>
       <td><input class="note" data-i="${i}" type="text" value="${esc(j.notes || '')}" placeholder="notes…"></td>
       <td><button class="btn small danger del" data-i="${i}">✕</button></td>
@@ -738,10 +757,11 @@ $('tAdd').addEventListener('click', () => {
   const org = $('tOrg').value.trim();
   if (!title && !org) return toast('Add at least a title or organization');
   tracker.unshift({
-    title: title || '(untitled)', org, loc: $('tLoc').value.trim(), link: $('tLink').value.trim(),
-    status: 'Saved', notes: '', added: new Date().toLocaleDateString(),
+    id: nextTrackId(), title: title || '(untitled)', org, loc: $('tLoc').value.trim(), link: $('tLink').value.trim(),
+    status: 'Saved', notes: '', added: new Date().toLocaleDateString(), kit: $('tKit').value,
   });
   ['tTitle', 'tOrg', 'tLoc', 'tLink'].forEach((id) => ($(id).value = ''));
+  $('tKit').value = '';
   save(LS.tracker, tracker); renderTracker(); toast('Job added ✓');
 });
 
@@ -749,6 +769,7 @@ $('tBody').addEventListener('change', (e) => {
   const i = e.target.dataset.i;
   if (i == null) return;
   if (e.target.classList.contains('statusSel')) tracker[i].status = e.target.value;
+  if (e.target.classList.contains('kitSel')) tracker[i].kit = e.target.value;
   if (e.target.classList.contains('note')) tracker[i].notes = e.target.value;
   save(LS.tracker, tracker); renderTracker();
 });
@@ -768,8 +789,8 @@ function download(name, text, type) {
 }
 
 $('tExport').addEventListener('click', () => {
-  const rows = [['Title', 'Organization', 'Location', 'Status', 'Added', 'Link', 'Notes'],
-    ...tracker.map((j) => [j.title, j.org, j.loc, j.status, j.added, j.link, j.notes])];
+  const rows = [['Title', 'Organization', 'Location', 'Status', 'Role type', 'Added', 'Link', 'Notes'],
+    ...tracker.map((j) => [j.title, j.org, j.loc, j.status, j.kit || '', j.added, j.link, j.notes])];
   const csv = rows.map((r) => r.map((c) => `"${String(c ?? '').replace(/"/g, '""')}"`).join(',')).join('\n');
   download('job-tracker.csv', csv, 'text/csv');
 });
