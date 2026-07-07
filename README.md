@@ -1,6 +1,6 @@
-# Kai's Job Hunt 🌊 — MSW Edition
+# Kai's Job Hunt 🌊 — LMSW Edition
 
-A personal job-finding tool for a post-grad MSW (Tulane) looking for **entry-level / new-grad social work jobs** in **New Orleans, Chicago, and Southern California**.
+A personal job-finding tool for a **licensed LMSW** (Louisiana State Board of Social Work Examiners, MSW from Tulane) looking for social work jobs in **New Orleans, Chicago, and Southern California**.
 
 It's a single, self-contained web page — no installs, no accounts, no server. All your data stays in your own browser.
 
@@ -12,15 +12,16 @@ It's a single, self-contained web page — no installs, no accounts, no server. 
 
 ## What's inside
 
-- **🔎 Find Jobs** — pick a city (New Orleans, Chicago, LA, Orange County, San Diego, Inland Empire) and a role type (case manager, medical SW, behavioral health, school SW, hospice, crisis, and a "search by license" mode that finds new-grad postings). It builds pre-tuned searches on Indeed, LinkedIn, Idealist, GovernmentJobs, NASW JobLink, ZipRecruiter, SimplyHired, and USAJOBS, with entry-level filters applied where the board supports them.
-- **✍️ Tailor** — automates per-role application prep. Pick a role type and get: a role-specific professional summary built from your profile, ATS keywords to weave in, proven resume bullets to adapt, an **ATS keyword scanner** (paste a job description and see which keywords your resume hits vs. misses), and a full **cover letter generator** that merges your profile, field placements, and role-specific content.
-- **🏥 Employers** — a curated directory of ~50 MSW-friendly employers across the three regions (health systems, county/state agencies, school districts, nonprofits) with direct links, filterable by type.
-- **📋 Tracker** — log every application, move it through Saved → Applied → Interviewing → Offer, add notes, export to CSV/JSON.
-- **🪪 Licensing** — a plain-English cheat sheet for what you can get licensed as *right after graduating* in Louisiana (LMSW), Illinois (LSW), and California (ASW), with board links.
-- **👤 My Profile** — drop in your grad year, bio, field placements, resume text, and links **whenever you're ready**. It auto-saves, exports/imports as JSON so you can move it between devices, and powers a one-click **elevator pitch generator** for cover letters and recruiter messages.
+- **🔎 Find Jobs** — pick a city (New Orleans, Chicago, LA, Orange County, San Diego, Inland Empire) and a role type (forensic/juvenile justice, case manager, medical SW, behavioral health, school SW, hospice, crisis, and a "search by license" mode). It builds pre-tuned searches on Indeed, LinkedIn, Idealist, GovernmentJobs, NASW JobLink, ZipRecruiter, SimplyHired, and USAJOBS, with entry-level filters applied where the board supports them.
+- **✍️ Tailor** — automates per-role application prep. Pick a role type (Forensic / Juvenile Justice is the default — it matches the strongest resume experience) and get: a role-specific professional summary built from your profile, ATS keywords to weave in, resume bullets built from real experience, an **ATS keyword scanner** (paste a job description and see which keywords your resume hits vs. misses), and a full **cover letter generator**.
+- **🚀 Auto Apply** — the batch pipeline. Select saved jobs from the Tracker, and for each one it auto-detects the right role kit from the job title (or uses the role type you set), builds a **tailored resume** (your real resume re-headlined for the role, with targeted highlights and keywords pulled from the pasted job description) plus a **cover letter**, opens each posting, and offers copy/download buttons per packet — then logs the job as Applied with one click. A static page can't press "Submit" on employer sites, so it prepares everything and gets you to about a minute per application.
+- **🏥 Employers** — a curated directory of 50+ LMSW-friendly employers across the three regions (health systems, county/state agencies, school districts, nonprofits, and a **Justice/Advocacy** category: LCCR, public defenders, juvenile-justice and reentry orgs) with direct links, filterable by type.
+- **📋 Tracker** — log every application, tag it with a role type for tailoring, move it through Saved → Applied → Interviewing → Offer, add notes, export to CSV/JSON. Saved jobs feed the Auto Apply tab.
+- **🪪 Licensing** — Louisiana LMSW is ✅ in hand (License #19787, exp. 08/2026): renewal/CE reminders and the supervised path to LCSW, plus how to add Illinois (LSW by endorsement) and California (ASW registration) later, with board links.
+- **👤 My Profile** — pre-loaded with the real resume: contact info, license number and expiration, bio, interests, field experience, and the full plain-text resume. Everything is editable, auto-saves, exports/imports as JSON, and powers the elevator pitch generator and every other tab.
 
-## Adding your info later
+## Your info is pre-loaded
 
-Everything on the Profile tab is optional and can be filled in over time. Use **Export JSON** to back up your profile and tracker, and **Import JSON** to restore them on another browser or computer.
+The Profile tab ships pre-filled from Kai's resume (license #, experience, full resume text) — edit anything there and every generator updates. Use **Export JSON** to back up your profile and tracker, and **Import JSON** to restore them on another browser or computer.
 
 > ⚠️ Data lives in your browser's localStorage — clearing site data clears it, so export a backup once in a while.

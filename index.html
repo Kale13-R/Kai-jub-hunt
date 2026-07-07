@@ -170,6 +170,17 @@
             background: var(--bg); border-radius: 10px; padding: 10px 14px; margin-top: 8px; font-size: .9rem; }
   .bullet span { flex: 1; }
   .scanhead { font-weight: 700; font-size: .9rem; margin: 16px 0 8px; }
+
+  /* auto apply */
+  .applyjob { display: flex; gap: 12px; align-items: flex-start; border: 1px solid var(--line);
+              border-radius: 10px; padding: 10px 14px; background: var(--bg); margin-top: 8px; cursor: pointer; }
+  .applyjob:hover { border-color: var(--green-soft); }
+  .applyjob input[type=checkbox] { margin-top: 3px; width: auto; flex-shrink: 0; }
+  .applyjob-main { flex: 1; font-size: .9rem; }
+  .applybar { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
+  .packet { border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; margin-top: 14px; background: var(--bg); }
+  .packet h3 { margin: 0 0 10px; font-size: 1rem; }
+  .packet textarea { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .8rem; }
   #toast {
     position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
     background: var(--ink); color: var(--bg); padding: 10px 20px; border-radius: 10px;
@@ -184,10 +195,11 @@
 <header>
   <div class="wrap">
     <h1>Kai&rsquo;s Job Hunt 🌊</h1>
-    <p>Entry-level MSW jobs · New Orleans · Chicago · Southern California</p>
+    <p>LMSW jobs · New Orleans · Chicago · Southern California</p>
     <nav id="nav">
       <button data-tab="find" class="on">🔎 Find Jobs</button>
       <button data-tab="tailor">✍️ Tailor</button>
+      <button data-tab="apply">🚀 Auto Apply</button>
       <button data-tab="orgs">🏥 Employers</button>
       <button data-tab="track">📋 Tracker</button>
       <button data-tab="lic">🪪 Licensing</button>
@@ -202,7 +214,7 @@
 <section class="tab on" id="tab-find">
   <div class="card">
     <h2>Build a search</h2>
-    <p class="muted tight">Pick a city and a role, and this launches pre-tuned searches on every major job board — keywords already dialed in for new-grad MSW roles.</p>
+    <p class="muted tight">Pick a city and a role, and this launches pre-tuned searches on every major job board — keywords already dialed in for licensed-LMSW roles.</p>
 
     <h3>Where?</h3>
     <div class="chips" id="regionChips"></div>
@@ -232,12 +244,13 @@
   </div>
 
   <div class="card">
-    <h2>New-grad search tips</h2>
+    <h2>Search tips for a licensed LMSW</h2>
     <ul class="muted" style="font-size:.92rem; margin:8px 0; padding-left:20px">
-      <li><b>Search by license, not just title.</b> Try &ldquo;LMSW&rdquo;, &ldquo;LSW&rdquo;, or &ldquo;ASW&rdquo; as keywords — postings that list the provisional license are, by definition, open to new grads.</li>
-      <li><b>&ldquo;Case manager&rdquo; is the biggest entry door.</b> Hospitals, nonprofits, and county agencies hire far more case managers than &ldquo;social workers,&rdquo; and most only require the MSW.</li>
-      <li><b>County and state government hires constantly</b> (child welfare, public mental health) and rarely requires experience — check the government boards below and the Employers tab.</li>
-      <li><b>Your field placements count as experience.</b> List practicum hours and settings on your resume like jobs — agencies expect it from MSW grads.</li>
+      <li><b>Search &ldquo;LMSW&rdquo; directly, not just &ldquo;LSW&rdquo;/&ldquo;ASW.&rdquo;</b> She holds the license in hand (Louisiana, #19787, exp. 08/2026) — postings that say &ldquo;LMSW required&rdquo; are a fit most new grads can&rsquo;t claim.</li>
+      <li><b>&ldquo;Case manager&rdquo; is still the biggest entry door.</b> Hospitals, nonprofits, and county agencies hire far more case managers than &ldquo;social workers,&rdquo; and most only require the MSW/LMSW.</li>
+      <li><b>County and state government hires constantly</b> (child welfare, public mental health) and rarely requires much tenure — check the government boards below and the Employers tab.</li>
+      <li><b>Lead with the forensic internship.</b> Her Louisiana Center for Children&rsquo;s Rights placement (Jan&ndash;Dec 2025) is real forensic / juvenile-justice experience with youth in detention and community settings — list it as experience, not a practicum.</li>
+      <li><b>Forensic and court-adjacent roles fit her background.</b> Mitigation specialist, juvenile court, and public defender social-work roles line up with her forensic/juvenile-justice experience — use the dedicated role chip below.</li>
       <li><b>Set alerts.</b> Once a search looks right on Indeed/LinkedIn, save it as a daily email alert so postings come to you.</li>
     </ul>
   </div>
@@ -247,7 +260,7 @@
 <section class="tab" id="tab-tailor">
   <div class="card">
     <h2>Tailor your application</h2>
-    <p class="muted tight">Pick the type of role you're applying to and everything below adapts — summary, bullets, keywords, and cover letter. It pulls from your <b>My Profile</b> info, so the more you've filled in there, the better the output.</p>
+    <p class="muted tight">Pick the type of role you're applying to and everything below adapts — summary, bullets, keywords, and cover letter — built around your LMSW license and forensic social work experience. It pulls from your <b>My Profile</b> info, so the more you've filled in there, the better the output.</p>
     <div class="chips" id="tailorChips"></div>
   </div>
 
@@ -275,7 +288,7 @@
     <p class="muted tight">The terms screening software and hiring managers look for in this role. Work the ones that are true for you into your bullets.</p>
     <div class="chips" id="kwList"></div>
     <h3>Suggested bullets</h3>
-    <p class="muted tight">Proven phrasings for this role — swap the [bracketed] parts for your real numbers and settings from practicum.</p>
+    <p class="muted tight">Proven phrasings for this role, drawn from her forensic social work experience — swap any remaining [bracketed] parts for job-specific detail.</p>
     <div id="bulletList"></div>
   </div>
 
@@ -296,11 +309,46 @@
   </div>
 </section>
 
+<!-- ============ AUTO APPLY ============ -->
+<section class="tab" id="tab-apply">
+  <div class="card">
+    <h2>Pick jobs to apply to</h2>
+    <p class="muted tight">Jobs you've marked <b>Saved</b> in the Tracker show up here. Select the ones you want packets for, then run it below.</p>
+    <div class="applybar">
+      <label style="margin:10px 0 0; font-weight:600; font-size:.9rem; display:flex; align-items:center; gap:8px; cursor:pointer">
+        <input type="checkbox" id="applySelectAll" style="width:auto"> Select all
+      </label>
+      <span class="muted" id="applyCount">0 selected</span>
+    </div>
+    <div id="applyList"></div>
+    <p class="muted" id="applyEmpty" style="margin-top:14px">No saved jobs yet. Head to <b>Find Jobs</b> to search, then save a posting — or add one directly in the <b>Tracker</b> tab with status &ldquo;Saved.&rdquo;</p>
+  </div>
+
+  <div class="card">
+    <h2>Tailoring</h2>
+    <p class="muted tight">Each selected job's packet uses its own role type from the Tracker (or auto-detects one from the job title if you left that blank). Optionally paste a job description below — its keywords get scanned against each job's role kit and woven into the tailored resume as a keyword line. Leave it blank to skip.</p>
+    <label>Paste job description (optional)</label>
+    <textarea id="applyJD" rows="6" placeholder="Paste a job posting here to pull in extra keywords…"></textarea>
+  </div>
+
+  <div class="card">
+    <h2>Run</h2>
+    <div class="row">
+      <button class="btn primary" id="applyRunBtn">🚀 Generate packets &amp; apply</button>
+      <button class="btn" id="applyDownloadAll">Download all (.txt)</button>
+    </div>
+    <div class="callout warn">
+      ⚠️ Honest limits: this is a static page — it can&rsquo;t press &ldquo;Submit&rdquo; on an employer&rsquo;s site for you. What it <i>does</i> do is prepare everything: a tailored resume, a cover letter, and an opened application tab for each selected job, so the actual apply is just pasting in and hitting submit — usually under a minute per job. Click <b>Mark applied ✓</b> on a packet once you've sent it, to log it back to the Tracker.
+    </div>
+    <div id="applyResults"></div>
+  </div>
+</section>
+
 <!-- ============ EMPLOYERS ============ -->
 <section class="tab" id="tab-orgs">
   <div class="card">
     <h2>MSW-friendly employers</h2>
-    <p class="muted tight">Hand-picked organizations in each region that regularly hire new MSW grads. Apply directly — direct applications often beat job-board ones. Links go to each org&rsquo;s careers/main page.</p>
+    <p class="muted tight">Hand-picked organizations in each region that regularly hire LMSWs / early-career MSWs. Apply directly — direct applications often beat job-board ones. Links go to each org&rsquo;s careers/main page.</p>
     <div class="chips" id="orgRegionChips"></div>
     <div class="chips" id="orgTypeChips"></div>
     <div class="orgs" id="orgList"></div>
@@ -311,7 +359,7 @@
 <section class="tab" id="tab-track">
   <div class="card">
     <h2>Application tracker</h2>
-    <p class="muted tight">Everything saves automatically in this browser. Use Export to back it up or move it to another device.</p>
+    <p class="muted tight">Everything saves automatically in this browser. Use Export to back it up or move it to another device. Jobs saved here show up in the Auto Apply tab, where you can generate a tailored resume + cover letter and apply in one pass.</p>
     <div class="counts" id="trackCounts"></div>
     <h3>Add a job</h3>
     <div class="grid2">
@@ -319,6 +367,7 @@
       <div><label>Organization</label><input type="text" id="tOrg" placeholder="Ochsner Health"></div>
       <div><label>Location</label><input type="text" id="tLoc" placeholder="New Orleans, LA"></div>
       <div><label>Posting link</label><input type="url" id="tLink" placeholder="https://…"></div>
+      <div><label>Role type (for tailoring)</label><select id="tKit"><option value="">— auto-detect —</option></select></div>
     </div>
     <div class="row" style="margin-top:12px">
       <button class="btn primary" id="tAdd">＋ Add job</button>
@@ -328,7 +377,7 @@
     </div>
     <div class="tablewrap">
       <table id="tTable" style="display:none">
-        <thead><tr><th>Job</th><th>Location</th><th>Status</th><th>Added</th><th>Notes</th><th></th></tr></thead>
+        <thead><tr><th>Job</th><th>Location</th><th>Status</th><th>Role type</th><th>Added</th><th>Notes</th><th></th></tr></thead>
         <tbody id="tBody"></tbody>
       </table>
     </div>
@@ -340,27 +389,29 @@
 <section class="tab" id="tab-lic">
   <div class="card">
     <h2>Licensing, state by state</h2>
-    <p class="muted tight">The credential you can get <b>right after graduating</b> is what unlocks most postings. Quick map for your three target regions:</p>
+    <p class="muted tight">Louisiana is <b>done</b> ✅ — you hold an active LMSW. This tab now tracks keeping it current, the path up to LCSW, and how to add Illinois or California if a role in those regions actually comes through.</p>
 
     <details class="lic" open>
-      <summary>🎷 Louisiana — LMSW (then LCSW)</summary>
+      <summary>🎷 Louisiana — LMSW in hand ✅ (next: LCSW)</summary>
       <div class="body">
         <ul>
-          <li><b>Right after your MSW:</b> apply to the LA State Board of Social Work Examiners for <b>LMSW</b> (Licensed Master&rsquo;s Social Worker) — requires the MSW and passing the <b>ASWB Master&rsquo;s exam</b>. No work experience needed.</li>
-          <li>With the LMSW you can practice under supervision, which covers most agency, hospital, and case-management jobs.</li>
-          <li><b>LCSW</b> comes later, after several years of board-approved supervised clinical hours and the ASWB Clinical exam.</li>
+          <li><b>You have this:</b> Licensed Master Social Worker (LMSW), Louisiana State Board of Social Work Examiners — <b>License #19787</b>, expires <b>08/2026</b>.</li>
+          <li><b>Renewal:</b> LMSW renews annually — calendar a reminder well before 08/2026 to renew and confirm you&rsquo;ve completed the current continuing education (CE) requirements. Check <a href="https://www.labswe.org" target="_blank" rel="noopener">labswe.org</a> for the exact CE hours and renewal steps — don&rsquo;t rely on last year&rsquo;s numbers.</li>
+          <li><b>Next step, LCSW:</b> accrue supervised clinical practice hours under a <b>Board-Approved Clinical Supervisor (BACS)</b>, then sit for the <b>ASWB Clinical exam</b>. Verify the current required hour count and supervision structure on <a href="https://www.labswe.org" target="_blank" rel="noopener">labswe.org</a> before committing to a supervisor.</li>
+          <li><b>Practical win:</b> with the LMSW active right now, you already qualify for any posting that says &ldquo;LMSW required&rdquo; — that&rsquo;s a large slice of hospital and agency case-management roles. Apply to those immediately, no waiting.</li>
           <li>Board: <a href="https://www.labswe.org" target="_blank" rel="noopener">labswe.org</a></li>
         </ul>
       </div>
     </details>
 
     <details class="lic">
-      <summary>🌆 Illinois — LSW (then LCSW)</summary>
+      <summary>🌆 Illinois — LSW by endorsement (then LCSW)</summary>
       <div class="body">
         <ul>
-          <li><b>Right after your MSW:</b> apply to IDFPR for the <b>LSW</b> (Licensed Social Worker) — with an MSW, no supervised experience is required; you pass the <b>ASWB Master&rsquo;s exam</b>.</li>
-          <li>Chicago Public Schools requires a separate <b>PEL with a school social worker endorsement</b> (ISBE) for school SW positions — but nonprofits, hospitals, and DCFS do not.</li>
-          <li><b>LCSW</b> requires ~3,000 supervised clinical hours post-MSW plus the ASWB Clinical exam.</li>
+          <li><b>You&rsquo;re not starting from scratch:</b> you already hold an active out-of-state LMSW and have passed the ASWB Master&rsquo;s exam. Apply to <b>IDFPR</b> for <b>LSW</b> licensure by endorsement using your Louisiana license, rather than reapplying as a new grad.</li>
+          <li>Your ASWB Master&rsquo;s exam score can typically be transferred to Illinois through <a href="https://www.aswb.org" target="_blank" rel="noopener">aswb.org</a> instead of retaking the exam — confirm the transfer process and any endorsement paperwork directly with IDFPR.</li>
+          <li>Chicago Public Schools still requires a separate <b>PEL with a school social worker endorsement</b> (ISBE) for school SW positions — nonprofits, hospitals, and DCFS do not.</li>
+          <li><b>LCSW</b> in Illinois has its own supervised clinical hour requirement plus the ASWB Clinical exam — check current numbers with IDFPR rather than assuming they match Louisiana&rsquo;s.</li>
           <li>Board: <a href="https://idfpr.illinois.gov" target="_blank" rel="noopener">idfpr.illinois.gov</a></li>
         </ul>
       </div>
@@ -370,19 +421,23 @@
       <summary>🌴 California — ASW registration (then LCSW)</summary>
       <div class="body">
         <ul>
-          <li><b>Right after your MSW:</b> register with the CA Board of Behavioral Sciences as an <b>ASW</b> (Associate Clinical Social Worker). No exam needed to register — just the degree and application.</li>
-          <li>ASW registration lets you accrue the ~3,000 supervised hours (over at least 104 weeks) needed for <b>LCSW</b>; you&rsquo;ll also take the CA Law &amp; Ethics exam during your first renewal cycle and the ASWB Clinical exam at the end.</li>
-          <li>Tons of LA/OC/SD county and nonprofit postings say &ldquo;ASW required or eligible&rdquo; — those are new-grad jobs.</li>
+          <li>This path is <b>unchanged</b> by holding the LMSW — CA&rsquo;s ASW registration is degree-based, not license-based. Register with the CA Board of Behavioral Sciences as an <b>ASW</b> (Associate Clinical Social Worker) using your Tulane MSW. No exam needed to register — just the degree and application.</li>
+          <li>Your ASWB Master&rsquo;s exam pass does <b>not</b> shortcut California&rsquo;s clinical track — CA requires its own supervised-hours path to LCSW plus the <b>CA Law &amp; Ethics exam</b> and the ASWB Clinical exam at the end.</li>
+          <li>Since ASW registration only needs the degree, this is still a fast, straightforward step to add whenever a CA opportunity looks real.</li>
+          <li>Tons of LA/OC/SD county and nonprofit postings say &ldquo;ASW required or eligible&rdquo; — those are open to you as soon as you register.</li>
           <li>Board: <a href="https://www.bbs.ca.gov" target="_blank" rel="noopener">bbs.ca.gov</a></li>
         </ul>
       </div>
     </details>
 
     <div class="callout warn">
-      ⚠️ Requirements change — always verify current rules, fees, and hour counts on the board sites before applying. If you might move between these states, apply for the home-state license first; transferring an active license is easier than starting over.
+      ⚠️ Requirements change — always verify current rules, fees, CE hours, and supervised-hour counts on the board sites before applying or renewing. If you might move between these states, lean on endorsement/reciprocity from your active Louisiana license rather than starting over.
     </div>
     <div class="callout">
-      💡 <b>Put &ldquo;LMSW candidate&rdquo; / &ldquo;ASW-eligible&rdquo; on your resume</b> the moment you apply for the license. Recruiters filter for those exact strings.
+      💡 <b>Use the exact credential string on your resume.</b> Put &ldquo;Kai Ridley, LMSW&rdquo; in your name line, and list &ldquo;LMSW, Louisiana State Board of Social Work Examiners, License #19787, exp. 08/2026&rdquo; in a certifications section (already reflected on your resume). Recruiters filter for the exact string &ldquo;LMSW&rdquo; — make sure it&rsquo;s easy to find.
+    </div>
+    <div class="callout">
+      ⏰ Set a renewal reminder now — LMSW #19787 expires <b>08/2026</b>. Give yourself a few months of runway to finish CE requirements before the deadline.
     </div>
   </div>
 </section>
@@ -391,17 +446,17 @@
 <section class="tab" id="tab-me">
   <div class="card">
     <h2>My profile</h2>
-    <p class="muted tight">Drop your info here as you go — grad year, bio, resume text, links. It saves in this browser, feeds the pitch generator below, and exports to a file you can re-import anywhere.</p>
+    <p class="muted tight">Your info is pre-loaded from Kai's resume as a licensed LMSW — edit anything below to keep it current. It saves in this browser, feeds the pitch generator below, and exports to a file you can re-import anywhere.</p>
     <div class="grid2">
-      <div><label>Name</label><input type="text" id="pName" placeholder="Kai …"></div>
-      <div><label>Email</label><input type="email" id="pEmail"></div>
+      <div><label>Name</label><input type="text" id="pName" placeholder="Full name" value="Kai Ridley"></div>
+      <div><label>Email</label><input type="email" id="pEmail" value="kainridley@gmail.com"></div>
       <div><label>Degree &amp; school</label><input type="text" id="pSchool" value="MSW, Tulane University"></div>
-      <div><label>Graduation (month/year)</label><input type="text" id="pGrad" placeholder="May 2026"></div>
+      <div><label>Graduation (month/year)</label><input type="text" id="pGrad" placeholder="e.g. December 2025" value="December 2025"></div>
       <div><label>License status</label>
         <select id="pLicense">
           <option value="">— not started yet —</option>
           <option>LMSW candidate (Louisiana)</option>
-          <option>LMSW (Louisiana)</option>
+          <option selected>LMSW (Louisiana)</option>
           <option>LSW candidate (Illinois)</option>
           <option>LSW (Illinois)</option>
           <option>ASW-eligible (California)</option>
@@ -409,16 +464,61 @@
           <option>Other / multiple</option>
         </select>
       </div>
-      <div><label>LinkedIn / portfolio URL</label><input type="url" id="pLink" placeholder="https://linkedin.com/in/…"></div>
+      <div><label>License #</label><input type="text" id="pLicNum" placeholder="e.g. 19787" value="19787"></div>
+      <div><label>License expiration</label><input type="text" id="pLicExp" placeholder="e.g. 08/2026" value="08/2026"></div>
+      <div><label>LinkedIn / portfolio URL</label><input type="url" id="pLink" placeholder="https://linkedin.com/in/kairidley"></div>
     </div>
     <label>Interests &amp; specializations (comma-separated)</label>
-    <input type="text" id="pInterests" placeholder="e.g. medical social work, trauma-informed care, youth &amp; families">
+    <input type="text" id="pInterests" placeholder="e.g. medical social work, trauma-informed care, youth &amp; families" value="forensic social work, juvenile justice, trauma-informed care, case management, crisis intervention">
     <label>Short bio</label>
-    <textarea id="pBio" rows="4" placeholder="2–4 sentences about you: populations you've worked with, what you're looking for, languages, etc."></textarea>
+    <textarea id="pBio" rows="4" placeholder="2–4 sentences about you: populations you've worked with, what you're looking for, languages, etc.">Licensed Master Social Worker (LMSW) specializing in case management, crisis intervention, and trauma-informed care coordination. My forensic social work internship with the Louisiana Center for Children's Rights gave me direct experience supporting justice-involved youth across detention and community settings, conducting intakes, assessments, and coordinated care planning. I bring a research background in trauma-informed practice and equity-focused program design to every caseload.</textarea>
     <label>Field placements / practicum experience</label>
-    <textarea id="pField" rows="3" placeholder="e.g. 600 hrs — Children's Hospital New Orleans, inpatient psych unit; 400 hrs — community mental health clinic"></textarea>
+    <textarea id="pField" rows="3" placeholder="e.g. 600 hrs — Children's Hospital New Orleans, inpatient psych unit; 400 hrs — community mental health clinic">Jan 2025–Dec 2025 — Forensic Social Work Intern, Louisiana Center for Children's Rights: 50+ client intakes and psychosocial assessments, caseload of 10+ clients with weekly visits across detention and community settings.</textarea>
     <label>Resume (paste plain text — used for quick copy when filling applications)</label>
-    <textarea id="pResume" rows="8" placeholder="Paste your resume text here…"></textarea>
+    <textarea id="pResume" rows="8" placeholder="Paste your resume text here…">Kai Ridley, LMSW
+New Orleans, LA | kainridley@gmail.com | (213) 309-7776
+
+SUMMARY
+Licensed Master Social Worker specializing in case management, crisis intervention, and trauma-informed care coordination.
+
+EXPERIENCE
+
+Forensic Social Work Intern — Louisiana Center for Children's Rights (Jan 2025–Dec 2025)
+- Conducted 50+ client intakes and psychosocial assessments informing individualized treatment and legal support strategies
+- Managed a caseload of 10+ clients with weekly visits across detention and community settings
+- Connected 20+ clients to community resources including therapy, academic accommodations, and medical services
+- Coordinated with attorneys, clinicians, and community organizations to ensure continuity of care
+
+Post-Baccalaureate Fellow / Undergraduate Research Assistant — XULA Center for Traumatic Stress Research (Jan 2022–Jul 2024)
+- Conducted research on improving African American student representation in STEM through wraparound counseling
+- Created and executed 30+ post social media campaign
+- Led independent research on empowering adolescent girls in STEM
+
+Youth Participatory Action Research (YPAR) Intern — Tulane University &amp; Coalition of Compassionate Schools (Aug 2023–Jun 2024)
+- Mentored a cohort of 10 students through policy-focused research on student-teacher relationships
+- Supported research on trauma-informed practices in middle schools
+
+Research Assistant — Xavier University of Louisiana &amp; Tulane School of Public Health (Aug 2022–May 2024)
+- Surveyed 100+ restaurants on nutrition environments
+- Contributed to passage of the Healthy Kids Meals Beverage Ordinance
+
+EDUCATION
+MSW, Tulane University School of Social Work — December 2025
+Volunteer, Peace Center After School Program
+
+BS Psychology, Xavier University of Louisiana — December 2023
+Honors in Sociology; Recording Secretary, inaugural XULA Collegiate Section of NCNW
+
+CERTIFICATIONS &amp; PRESENTATIONS
+Licensed Master Social Worker (LMSW), Louisiana State Board of Social Work Examiners — License #19787, expires 08/2026
+
+Dr. Olatunji-West, C., Nguyen, C., &amp; Ridley, K. (2023, October). "Disrupting Obstacles to Equity In STEM: A Wraparound Approach." Louisiana Counseling Association Annual Conference, Baton Rouge, LA.
+
+SKILLS
+Project Coordination &amp; Administrative Support — workflow management, documentation, strategic planning
+Case Management &amp; Documentation — intake, assessments, confidential record handling
+Data Analysis &amp; Reporting — quantitative/qualitative analysis, compliance tracking, data entry
+Technical — Microsoft Office Suite (Excel, Word, Outlook), Google Workspace</textarea>
     <div class="row" style="margin-top:14px">
       <button class="btn primary" id="pSave">Save profile</button>
       <button class="btn" id="pExport">Export JSON</button>
@@ -458,15 +558,16 @@ const REGIONS = [
 ];
 
 const ROLES = [
-  { id: 'case',    label: 'Case Manager',            q: '"case manager" OR "case management" MSW' },
+  { id: 'forensic', label: 'Forensic / Juvenile Justice', q: '"forensic social worker" OR "juvenile justice" OR "mitigation specialist"' },
+  { id: 'case',    label: 'Case Manager',            q: '"case manager" OR "case management" MSW OR LMSW' },
   { id: 'medical', label: 'Medical / Hospital SW',   q: '"medical social worker" OR "hospital social worker"' },
-  { id: 'bh',      label: 'Behavioral / Mental Health', q: '"behavioral health" OR "mental health" "social worker" MSW' },
+  { id: 'bh',      label: 'Behavioral / Mental Health', q: '"behavioral health" OR "mental health" "social worker" MSW OR LMSW' },
   { id: 'school',  label: 'School Social Work',      q: '"school social worker"' },
   { id: 'child',   label: 'Child Welfare & Family',  q: '"child welfare" OR "family services" social worker' },
   { id: 'hospice', label: 'Hospice / Palliative',    q: '"hospice social worker" OR "palliative care" social worker' },
   { id: 'crisis',  label: 'Crisis / Advocacy',       q: '"crisis counselor" OR "victim advocate" OR "crisis intervention"' },
   { id: 'program', label: 'Program Coordinator',     q: '"program coordinator" OR "program manager" "social services"' },
-  { id: 'newgrad', label: 'By license (new grad)',   q: 'LMSW OR LSW OR ASW OR "MSW required"' },
+  { id: 'newgrad', label: 'By license (LMSW/LSW/ASW)', q: 'LMSW OR LSW OR ASW OR "MSW required"' },
   { id: 'any',     label: 'Anything MSW',            q: 'MSW "social worker"' },
 ];
 
@@ -490,13 +591,13 @@ const BOARDS = [
       `https://www.usajobs.gov/Search/Results?k=${q}&l=${l}` },
 ];
 
-// type: health | gov | school | nonprofit
+// type: health | gov | school | nonprofit | justice
 const ORGS = {
   nola: [
     { n: 'Ochsner Health', t: 'health', d: 'Largest LA health system — medical SW, case management, behavioral health.', u: 'https://careers.ochsner.org' },
-    { n: 'LCMC Health (incl. Children’s Hospital)', t: 'health', d: 'UMC, Children’s, Touro & more — frequent new-grad medical SW openings.', u: 'https://careers.lcmchealth.org' },
+    { n: 'LCMC Health (incl. Children’s Hospital)', t: 'health', d: 'UMC, Children’s, Touro & more — frequent openings for early-career MSWs/LMSWs.', u: 'https://careers.lcmchealth.org' },
     { n: 'Tulane University', t: 'school', d: 'Staff roles: student support, community health programs, research.', u: 'https://jobs.tulane.edu' },
-    { n: 'Louisiana DCFS / State Civil Service', t: 'gov', d: 'Child welfare specialists — hires new MSWs continuously statewide.', u: 'https://www.governmentjobs.com/careers/louisiana' },
+    { n: 'Louisiana DCFS / State Civil Service', t: 'gov', d: 'Child welfare specialists — hires early-career MSWs/LMSWs continuously statewide.', u: 'https://www.governmentjobs.com/careers/louisiana' },
     { n: 'Metropolitan Human Services District', t: 'gov', d: 'Public behavioral health for Orleans/Plaquemines/St. Bernard.', u: 'https://www.mhsdla.org' },
     { n: 'NOLA Public Schools', t: 'school', d: 'School social workers & student support across charter networks.', u: 'https://nolapublicschools.com' },
     { n: 'CrescentCare', t: 'nonprofit', d: 'Community health center — case management, behavioral health.', u: 'https://www.crescentcare.org' },
@@ -508,16 +609,19 @@ const ORGS = {
     { n: 'VIA LINK (988 line)', t: 'nonprofit', d: 'Crisis line & referral services — great crisis-intervention entry.', u: 'https://vialink.org' },
     { n: 'Jewish Family Service of Greater NO', t: 'nonprofit', d: 'Counseling & senior services.', u: 'https://jfsneworleans.org' },
     { n: 'Boys Town Louisiana', t: 'nonprofit', d: 'In-home family services, youth programs.', u: 'https://www.boystown.org' },
+    { n: 'Louisiana Center for Children’s Rights', t: 'justice', d: 'Juvenile defense & forensic social work nonprofit — Kai’s internship site; a warm network for referrals & roles.', u: 'https://www.lakidsrights.org' },
+    { n: 'Orleans Public Defenders', t: 'justice', d: 'Public defender’s office with in-house social workers doing client advocacy & mitigation — a strong fit for forensic SW background.', u: 'https://www.opdla.org' },
+    { n: 'Youth Empowerment Project', t: 'justice', d: 'Case management & mentoring for court-involved and opportunity youth in New Orleans.', u: 'https://www.youthempowermentproject.org' },
   ],
   chi: [
-    { n: 'Illinois DCFS', t: 'gov', d: 'Child protection specialists — large, constant new-grad hiring.', u: 'https://dcfs.illinois.gov' },
+    { n: 'Illinois DCFS', t: 'gov', d: 'Child protection specialists — large, constant early-career MSW/LMSW hiring.', u: 'https://dcfs.illinois.gov' },
     { n: 'Chicago Public Schools', t: 'school', d: 'School SW (needs PEL endorsement) plus non-licensed student support roles.', u: 'https://www.cps.edu/careers' },
     { n: 'Cook County Health', t: 'health', d: 'Public hospital system — medical SW & care coordination.', u: 'https://cookcountyhealth.org' },
     { n: 'Rush University Medical Center', t: 'health', d: 'Medical & psych social work.', u: 'https://jobs.rush.edu' },
     { n: 'Northwestern Medicine', t: 'health', d: 'Care management & behavioral health across the metro.', u: 'https://jobs.nm.org' },
     { n: 'UChicago Medicine', t: 'health', d: 'South Side academic medical center.', u: 'https://www.uchicagomedicine.org' },
     { n: 'Lurie Children’s Hospital', t: 'health', d: 'Pediatric social work.', u: 'https://www.luriechildrens.org' },
-    { n: 'Thresholds', t: 'nonprofit', d: 'One of IL’s largest MH providers — hires many new MSWs.', u: 'https://www.thresholds.org' },
+    { n: 'Thresholds', t: 'nonprofit', d: 'One of IL’s largest MH providers — hires many early-career MSWs/LMSWs.', u: 'https://www.thresholds.org' },
     { n: 'Metropolitan Family Services', t: 'nonprofit', d: 'Family support, counseling, legal aid across Chicagoland.', u: 'https://www.metrofamily.org' },
     { n: 'UCAN', t: 'nonprofit', d: 'Youth trauma-focused services, foster care.', u: 'https://ucanchicago.org' },
     { n: 'Lutheran Social Services of Illinois', t: 'nonprofit', d: 'Foster care, MH, substance use statewide.', u: 'https://www.lssi.org' },
@@ -526,6 +630,7 @@ const ORGS = {
     { n: 'Youth Guidance', t: 'nonprofit', d: 'School-based programs (BAM, WOW) — school SW without the PEL.', u: 'https://www.youth-guidance.org' },
     { n: 'Casa Central', t: 'nonprofit', d: 'Latino-serving social services agency.', u: 'https://www.casacentral.org' },
     { n: 'One Hope United', t: 'nonprofit', d: 'Child & family services, early learning.', u: 'https://onehopeunited.org' },
+    { n: 'Juvenile Protective Association', t: 'justice', d: 'Chicago’s oldest child welfare agency — clinical & forensic services for court-involved youth and families.', u: 'https://www.jpachicago.org' },
   ],
   socal: [
     { n: 'LA County (DCFS, DMH, DHS)', t: 'gov', d: 'The largest MSW employer in the country — children’s SW & psychiatric SW tracks.', u: 'https://www.governmentjobs.com/careers/lacounty' },
@@ -546,6 +651,7 @@ const ORGS = {
     { n: 'Wellnest', t: 'nonprofit', d: 'Emotional health for kids & young adults (South LA).', u: 'https://wellnestla.org' },
     { n: 'Father Joe’s Villages', t: 'nonprofit', d: 'Homeless services in San Diego.', u: 'https://my.neighbor.org' },
     { n: 'Union Rescue Mission', t: 'nonprofit', d: 'Skid Row homeless services (LA).', u: 'https://urm.org' },
+    { n: 'Anti-Recidivism Coalition', t: 'justice', d: 'Reentry & juvenile-justice-impacted community support across SoCal — case management & advocacy, forensic-SW aligned.', u: 'https://antirecidivism.org' },
   ],
 };
 
@@ -555,6 +661,7 @@ const ORG_TYPES = [
   { id: 'gov', label: '🏛️ Government' },
   { id: 'school', label: '🎓 Schools/Edu' },
   { id: 'nonprofit', label: '🤝 Nonprofit' },
+  { id: 'justice', label: '⚖️ Justice/Advocacy' },
 ];
 
 const STATUSES = ['Saved', 'Applied', 'Interviewing', 'Offer 🎉', 'Rejected'];
@@ -634,7 +741,7 @@ const ORG_REGIONS = [
   { id: 'chi', label: 'Chicago' },
   { id: 'socal', label: 'Southern California' },
 ];
-const TYPE_LABEL = { health: 'Healthcare', gov: 'Government', school: 'Schools/Edu', nonprofit: 'Nonprofit' };
+const TYPE_LABEL = { health: 'Healthcare', gov: 'Government', school: 'Schools/Edu', nonprofit: 'Nonprofit', justice: 'Justice/Advocacy' };
 
 function renderOrgs() {
   chipRow('orgRegionChips', ORG_REGIONS, ui.orgRegion === 'la' || ui.orgRegion === 'oc' || ui.orgRegion === 'sd' || ui.orgRegion === 'ie' ? 'socal' : ui.orgRegion, (id) => { ui.orgRegion = id; save(LS.ui, ui); renderOrgs(); });
@@ -652,7 +759,22 @@ function renderOrgs() {
 
 /* ============================= TRACKER ============================= */
 
+let tIdSeq = 0;
+function nextTrackId() { return `${Date.now()}:${tIdSeq++}`; }
+
 function renderTracker() {
+  // One-time populate of the role-type dropdown from KITS (declared later in the script,
+  // but this function only runs once INIT calls it, after KITS is initialized).
+  const kitSel = $('tKit');
+  if (kitSel && kitSel.options.length < 2) {
+    kitSel.insertAdjacentHTML('beforeend', KITS.map((k) => `<option value="${esc(k.id)}">${esc(k.label)}</option>`).join(''));
+  }
+
+  // Backfill ids for legacy items so the Auto Apply tab always has something stable to key on.
+  let backfilled = false;
+  tracker.forEach((j) => { if (!j.id) { j.id = nextTrackId(); backfilled = true; } });
+  if (backfilled) save(LS.tracker, tracker);
+
   const counts = {};
   STATUSES.forEach((s) => (counts[s] = 0));
   tracker.forEach((j) => { counts[j.status] = (counts[j.status] || 0) + 1; });
@@ -668,10 +790,19 @@ function renderTracker() {
       <td>${esc(j.loc)}</td>
       <td><select data-i="${i}" class="statusSel" style="border-left:4px solid ${STATUS_COLORS[j.status] || 'var(--line)'}">
         ${STATUSES.map((s) => `<option ${s === j.status ? 'selected' : ''}>${s}</option>`).join('')}</select></td>
+      <td><select data-i="${i}" class="kitSel">
+        <option value="">— auto-detect —</option>
+        ${KITS.map((k) => `<option value="${esc(k.id)}" ${k.id === j.kit ? 'selected' : ''}>${esc(k.label)}</option>`).join('')}</select></td>
       <td class="muted">${esc(j.added)}</td>
       <td><input class="note" data-i="${i}" type="text" value="${esc(j.notes || '')}" placeholder="notes…"></td>
       <td><button class="btn small danger del" data-i="${i}">✕</button></td>
     </tr>`).join('');
+
+  // Keep the Auto Apply tab's job list (Saved jobs + role-kit labels) in sync whenever the
+  // tracker changes — status edits, kit overrides, deletes, imports, or a Mark-applied action
+  // all flow back through here. renderApply is a function declaration defined further down in
+  // the script (Auto Apply section) but hoisted, so it always exists by the time this runs.
+  if (typeof renderApply === 'function') renderApply();
 }
 
 $('tAdd').addEventListener('click', () => {
@@ -679,10 +810,11 @@ $('tAdd').addEventListener('click', () => {
   const org = $('tOrg').value.trim();
   if (!title && !org) return toast('Add at least a title or organization');
   tracker.unshift({
-    title: title || '(untitled)', org, loc: $('tLoc').value.trim(), link: $('tLink').value.trim(),
-    status: 'Saved', notes: '', added: new Date().toLocaleDateString(),
+    id: nextTrackId(), title: title || '(untitled)', org, loc: $('tLoc').value.trim(), link: $('tLink').value.trim(),
+    status: 'Saved', notes: '', added: new Date().toLocaleDateString(), kit: $('tKit').value,
   });
   ['tTitle', 'tOrg', 'tLoc', 'tLink'].forEach((id) => ($(id).value = ''));
+  $('tKit').value = '';
   save(LS.tracker, tracker); renderTracker(); toast('Job added ✓');
 });
 
@@ -690,6 +822,7 @@ $('tBody').addEventListener('change', (e) => {
   const i = e.target.dataset.i;
   if (i == null) return;
   if (e.target.classList.contains('statusSel')) tracker[i].status = e.target.value;
+  if (e.target.classList.contains('kitSel')) tracker[i].kit = e.target.value;
   if (e.target.classList.contains('note')) tracker[i].notes = e.target.value;
   save(LS.tracker, tracker); renderTracker();
 });
@@ -709,8 +842,8 @@ function download(name, text, type) {
 }
 
 $('tExport').addEventListener('click', () => {
-  const rows = [['Title', 'Organization', 'Location', 'Status', 'Added', 'Link', 'Notes'],
-    ...tracker.map((j) => [j.title, j.org, j.loc, j.status, j.added, j.link, j.notes])];
+  const rows = [['Title', 'Organization', 'Location', 'Status', 'Role type', 'Added', 'Link', 'Notes'],
+    ...tracker.map((j) => [j.title, j.org, j.loc, j.status, j.kit || '', j.added, j.link, j.notes])];
   const csv = rows.map((r) => r.map((c) => `"${String(c ?? '').replace(/"/g, '""')}"`).join(',')).join('\n');
   download('job-tracker.csv', csv, 'text/csv');
 });
@@ -728,12 +861,14 @@ $('tImport').addEventListener('change', (e) => {
 
 /* ============================= PROFILE ============================= */
 
-const P_FIELDS = ['pName', 'pEmail', 'pSchool', 'pGrad', 'pLicense', 'pLink', 'pInterests', 'pBio', 'pField', 'pResume'];
+const P_FIELDS = ['pName', 'pEmail', 'pSchool', 'pGrad', 'pLicense', 'pLicNum', 'pLicExp', 'pLink', 'pInterests', 'pBio', 'pField', 'pResume'];
 
 function loadProfile() {
   const p = load(LS.profile, null);
   if (!p) return;
-  P_FIELDS.forEach((f) => { if (p[f] != null) $(f).value = p[f]; });
+  // Only overwrite a baked-in default when the saved profile actually has a value for it —
+  // an empty saved field (e.g. from an older save) shouldn't blank out Kai's pre-loaded resume data.
+  P_FIELDS.forEach((f) => { if (p[f]) $(f).value = p[f]; });
 }
 function readProfile() {
   const p = {};
@@ -768,13 +903,21 @@ $('pitchGen').addEventListener('click', () => {
   const name = p.pName || '[Your name]';
   const school = degreePhrase(p);
   const grad = p.pGrad ? ` (${p.pGrad})` : '';
-  const lic = p.pLicense ? ` I’m currently ${/candidate|eligible/i.test(p.pLicense) ? 'an ' + p.pLicense : 'licensed as ' + p.pLicense}.` : '';
-  const interests = p.pInterests ? ` with a focus on ${p.pInterests}` : '';
-  const field = p.pField ? ` During my program I completed field placements including ${p.pField.split('\n')[0].replace(/^\d+\s*hrs?\s*[—-]\s*/i, '')}.` : '';
+  const isCandidate = /candidate|eligible/i.test(p.pLicense || '');
+  // "LMSW (Louisiana)" + license # → "LMSW (Louisiana, License #19787)"
+  const licWithNum = p.pLicNum
+    ? (/\)$/.test(p.pLicense || '') ? p.pLicense.replace(/\)$/, `, License #${p.pLicNum})`) : `${p.pLicense} (License #${p.pLicNum})`)
+    : p.pLicense;
+  const licensePhrase = p.pLicense ? `a ${isCandidate ? licWithNum : 'licensed ' + licWithNum}` : '';
+  const interests = p.pInterests ? ` specializing in ${p.pInterests}` : '';
+  const fieldLine = p.pField ? ` Most recently: ${p.pField.split('\n')[0].replace(/^\d+\s*hrs?\s*[—-]\s*/i, '')}` : '';
   const bio = p.pBio ? ` ${p.pBio}` : '';
+  const lead = licensePhrase
+    ? `Hi, I’m ${name}, ${licensePhrase}${interests}, with a ${school}${grad}.`
+    : `Hi, I’m ${name}. I hold a ${school}${grad}${interests}.`;
   $('pitchOut').value =
-    `Hi, I’m ${name}. I recently earned my ${school}${grad}${interests}.${field}${lic}${bio} ` +
-    `I’m excited to bring my training and energy to a team doing meaningful work, and I’d love to talk about how I can contribute to your organization.`;
+    `${lead}${fieldLine}${bio} ` +
+    `I’m excited to bring my training and hands-on experience to a team doing meaningful work, and I’d love to talk about how I can contribute to your organization.`;
   toast('Pitch generated — edit to taste');
 });
 $('pitchCopy').addEventListener('click', () => {
@@ -787,101 +930,128 @@ $('pitchCopy').addEventListener('click', () => {
 
 // Per-role kits: ATS keywords, summary template, resume bullets, cover-letter middle paragraph.
 const KITS = [
+  { id: 'forensic', label: 'Forensic / Juvenile Justice',
+    kw: ['forensic social work', 'juvenile justice', 'psychosocial assessment', 'mitigation', 'court reports', 'detention', 'reentry', 'advocacy', 'interdisciplinary collaboration', 'trauma-informed care', 'case management', 'crisis intervention'],
+    summary: '{lic} with an {school} ({grad}) and hands-on forensic social work experience — a year with the Louisiana Center for Children’s Rights conducting psychosocial assessments, managing a caseload of justice-involved youth, and coordinating legal-support strategies with attorneys and clinicians. {interestClause}',
+    bullets: [
+      'Completed 50+ client intakes and psychosocial assessments, informing individualized treatment plans and legal-support strategies for justice-involved youth',
+      'Managed a caseload of 10+ clients with weekly visits across detention and community settings, providing crisis intervention and continuity of care',
+      'Connected 20+ clients to community resources — therapy, academic accommodations, and medical services — to support successful reentry',
+      'Coordinated with attorneys, clinicians, and community organizations to ensure continuity of care and ethical, legally-sound case documentation',
+    ],
+    letter: 'Forensic social work asks you to hold two things at once: rigorous, court-ready assessment and genuine relationship-building with youth who have plenty of reasons not to trust the system. During my year with the Louisiana Center for Children’s Rights, I completed 50+ intakes and psychosocial assessments, carried a caseload of justice-involved youth across detention and community settings, and worked side-by-side with attorneys and clinicians to build legal-support strategies that actually held up. I know how to move between a courtroom, a detention facility, and a family’s living room in the same week — and to document all of it cleanly.' },
   { id: 'case', label: 'Case Manager',
     kw: ['case management', 'needs assessment', 'service plan', 'care coordination', 'community resources', 'referrals', 'documentation', 'crisis intervention', 'advocacy', 'motivational interviewing', 'Medicaid', 'housing'],
-    summary: 'Recent MSW graduate ({school}, {grad}){lic} with hands-on case management experience from [hours] hours of supervised field practicum. Skilled in needs assessment, service planning, care coordination, and connecting clients to community resources. {interestClause}',
+    summary: '{lic} with an {school} ({grad}) and a year of case management experience from a forensic social work internship — coordinating individualized care plans, crisis intervention, and community-resource connections for a caseload of justice-involved youth. {interestClause}',
     bullets: [
-      'Managed a caseload of [X] clients, completing intake assessments, individualized service plans, and ongoing progress documentation',
-      'Coordinated referrals to [housing / benefits / medical / behavioral health] resources, following up to confirm linkage and reduce service gaps',
-      'Conducted crisis intervention and safety planning for clients experiencing [housing instability / domestic violence / acute mental health needs]',
-      'Documented all client contacts in [EHR / database] within agency timelines, maintaining compliance with [Medicaid / agency / grant] requirements',
+      'Managed a caseload of 10+ clients, completing intake assessments, individualized service plans, and ongoing progress documentation across detention and community settings',
+      'Connected 20+ clients to community resources — therapy, academic accommodations, and medical services — following up to confirm linkage and reduce service gaps',
+      'Conducted crisis intervention and safety planning for justice-involved youth, coordinating with attorneys, clinicians, and community organizations for continuity of care',
+      'Documented all client contacts and psychosocial assessments within agency timelines, maintaining compliance with [Medicaid / agency / grant] requirements',
     ],
-    letter: 'My field training centered on exactly the skills this role requires: assessing client needs, building individualized service plans, and coordinating across providers so nothing falls through the cracks. I pride myself on thorough, timely documentation and on the follow-through that turns a referral into an actual connection for a client.' },
+    letter: 'My year of forensic case-management experience with the Louisiana Center for Children’s Rights covered exactly what this role requires: assessing client needs, building individualized service plans, and coordinating across attorneys, clinicians, and community providers so nothing falls through the cracks. I carried a caseload of 10+ clients with weekly visits across detention and community settings, and I pride myself on thorough, timely documentation and the follow-through that turns a referral into an actual connection for a client.' },
   { id: 'medical', label: 'Medical / Hospital SW',
     kw: ['discharge planning', 'psychosocial assessment', 'biopsychosocial', 'interdisciplinary team', 'care transitions', 'patient advocacy', 'electronic medical record', 'family meetings', 'utilization review', 'community resources', 'end-of-life', 'crisis intervention'],
-    summary: 'Recent MSW graduate ({school}, {grad}){lic} trained in medical social work through [hours] hours of hospital-based field practicum. Experienced in psychosocial assessment, discharge planning, and collaborating with interdisciplinary teams to support patients and families through care transitions. {interestClause}',
+    summary: '{lic} with an {school} ({grad}) and a year of case-management and psychosocial-assessment experience, gained through a forensic social work internship coordinating care across legal, clinical, and community systems. {interestClause}',
     bullets: [
-      'Completed psychosocial assessments for patients on a [unit type] unit, identifying barriers to discharge and coordinating post-acute services',
-      'Collaborated with physicians, nurses, and care managers in interdisciplinary rounds to develop safe discharge plans for [X] patients weekly',
-      'Facilitated family meetings around [treatment decisions / end-of-life care / placement], providing emotional support and clear information',
-      'Connected patients to [home health / SNF / hospice / transportation / financial assistance] resources, documenting in [Epic / EHR]',
+      'Completed 50+ psychosocial assessments, identifying client needs and coordinating services across legal, clinical, and community systems',
+      'Collaborated with attorneys, clinicians, and community organizations — the interdisciplinary-team equivalent of hospital care coordination — to build individualized care plans for a caseload of 10+ clients',
+      'Facilitated conversations with clients and families around [treatment decisions / placement / care planning], providing emotional support and clear information',
+      'Connected 20+ clients to community resources — therapy, academic accommodations, and medical services — documenting all contacts in [Epic / EHR]',
     ],
-    letter: 'My hospital practicum immersed me in the rhythm of medical social work — rapid psychosocial assessments, discharge planning under real time pressure, and advocating for patients within an interdisciplinary team. I communicate clearly with clinical staff and compassionately with families, often on the hardest day of their lives.' },
+    letter: 'My forensic social work internship immersed me in interdisciplinary coordination — psychosocial assessment, care planning under real time pressure, and advocating for clients within a team of attorneys, clinicians, and community partners. I communicate clearly with professional colleagues and compassionately with clients and families, often during some of the hardest moments of their lives, and I’m ready to bring that same rigor to a medical setting.' },
   { id: 'bh', label: 'Behavioral / Mental Health',
     kw: ['treatment planning', 'individual therapy', 'group therapy', 'evidence-based', 'CBT', 'trauma-informed care', 'DSM-5', 'crisis de-escalation', 'safety planning', 'co-occurring disorders', 'clinical documentation', 'psychoeducation'],
-    summary: 'Recent MSW graduate ({school}, {grad}){lic} with clinical training in evidence-based, trauma-informed mental health care from [hours] hours of supervised practicum. Experienced in intake assessment, treatment planning, and individual and group interventions. {interestClause}',
+    summary: '{lic} with an {school} ({grad}) and a year of trauma-informed, crisis-intervention experience from a forensic social work internship, providing psychosocial assessment and coordinated care to a caseload of justice-involved youth. {interestClause}',
     bullets: [
-      'Provided individual [and group] counseling to [X] clients under licensed supervision, using [CBT / DBT-informed / trauma-informed] approaches',
-      'Completed diagnostic intake assessments and collaborative treatment plans, tracking progress against measurable goals',
-      'De-escalated clients in crisis and developed collaborative safety plans, coordinating with [mobile crisis / psychiatry / family] as needed',
-      'Facilitated psychoeducation groups on [coping skills / substance use / anger management] for [X] participants',
+      'Provided crisis intervention and trauma-informed support to a caseload of 10+ clients, de-escalating high-risk situations across detention and community settings',
+      'Completed 50+ psychosocial intake assessments, informing individualized treatment plans and legal-support strategies',
+      'Coordinated with attorneys, clinicians, and community organizations to develop and monitor collaborative care plans',
+      'Connected 20+ clients to therapy, academic accommodations, and medical services, tracking progress and following up on linkage',
     ],
-    letter: 'My clinical training emphasized evidence-based, trauma-informed practice — from diagnostic assessment and treatment planning through individual and group intervention. I am committed to receiving strong supervision, growing toward clinical licensure, and meeting clients with both skill and genuine warmth.' },
+    letter: 'My forensic social work training centered on trauma-informed, crisis-responsive practice — from intake assessment through coordinated treatment planning for youth navigating both legal and clinical systems. I bring a year of real crisis-intervention experience, a commitment to strong clinical supervision, and genuine warmth to every caseload.' },
   { id: 'school', label: 'School Social Work',
     kw: ['IEP', '504 plan', 'MTSS', 'student support', 'behavioral intervention', 'attendance', 'parent engagement', 'classroom observation', 'social-emotional learning', 'crisis response', 'mandated reporter', 'community referrals'],
-    summary: 'Recent MSW graduate ({school}, {grad}){lic} with school-based field experience supporting student wellbeing, attendance, and family engagement. Trained in social-emotional interventions, multi-tiered systems of support, and connecting families to community resources. {interestClause}',
+    summary: '{lic} with an {school} ({grad}) and a year of experience supporting justice-involved youth and their families, including trauma-informed intervention, crisis response, and connecting clients to educational and community resources. {interestClause}',
     bullets: [
-      'Provided individual and small-group support to [X] students addressing [attendance / behavior / grief / anxiety], coordinating with teachers and counselors',
-      'Participated in [IEP / 504 / MTSS / student support team] meetings, contributing social-emotional assessments and intervention recommendations',
-      'Built relationships with parents and caregivers through [home visits / conferences / calls], increasing family engagement in student plans',
-      'Responded to student crises alongside school staff, conducting risk assessments and coordinating follow-up care',
+      'Supported a caseload of 10+ justice-involved youth with weekly visits, addressing behavioral, academic, and mental-health needs in coordination with schools and community partners',
+      'Connected 20+ clients to academic accommodations, therapy, and medical services, coordinating with school staff and outside providers',
+      'Completed 50+ psychosocial assessments informing individualized support and legal-advocacy plans',
+      'Responded to client crises, conducting risk assessments and coordinating follow-up care with attorneys, clinicians, and community organizations',
     ],
-    letter: 'My school-based training taught me to meet students where they are — in classrooms, hallways, and family conversations — and to work the systems (IEP teams, MTSS, community partners) that turn concern into concrete support. I love the mix of individual work, group work, and family engagement this role offers.' },
+    letter: 'My forensic social work internship taught me to meet youth where they are — in detention facilities, community settings, and family conversations — and to work the systems (courts, clinicians, schools, community partners) that turn concern into concrete support. I love the mix of individual advocacy, interdisciplinary coordination, and family engagement this role offers.' },
   { id: 'child', label: 'Child Welfare & Family',
     kw: ['child welfare', 'family assessment', 'safety plan', 'home visits', 'court reports', 'permanency', 'mandated reporter', 'reunification', 'foster care', 'case documentation', 'trauma-informed care', 'family engagement'],
-    summary: 'Recent MSW graduate ({school}, {grad}){lic} with field training in child and family services. Skilled in family assessment, safety planning, home visiting, and trauma-informed engagement with children and caregivers. {interestClause}',
+    summary: '{lic} with an {school} ({grad}) and a year of field experience in forensic social work with justice-involved youth and families — family engagement, safety planning, and court-ready documentation. {interestClause}',
     bullets: [
-      'Conducted family assessments and home visits for [X] families, evaluating safety, strengths, and service needs',
-      'Developed safety plans and service plans with caregivers, monitoring progress toward [reunification / permanency] goals',
-      'Prepared thorough, court-ready documentation and collaborated with [attorneys / CASA / providers] on case planning',
-      'Engaged resistant or fearful families using strengths-based, trauma-informed approaches to build working alliances',
+      'Completed 50+ intakes and psychosocial assessments for justice-involved youth and families, evaluating needs and informing legal-support strategies',
+      'Managed a caseload of 10+ clients with weekly visits across detention and community settings, monitoring progress toward stability and reentry goals',
+      'Prepared thorough, court-ready documentation and collaborated with attorneys, clinicians, and community organizations on case planning',
+      'Engaged youth and families using strengths-based, trauma-informed approaches to build working alliances, even in high-stakes legal circumstances',
     ],
-    letter: 'Child welfare work demands both spine and heart — thorough assessment and documentation on one side, and genuine, trauma-informed engagement with families in crisis on the other. My training prepared me for both, and I am drawn to the responsibility this work carries.' },
+    letter: 'Forensic and child-welfare work both demand spine and heart — thorough assessment and court-ready documentation on one side, and genuine, trauma-informed engagement with youth and families in crisis on the other. My year at the Louisiana Center for Children’s Rights gave me real experience with both, and I’m drawn to the responsibility this work carries.' },
   { id: 'hospice', label: 'Hospice / Palliative',
     kw: ['end-of-life', 'bereavement', 'advance directives', 'psychosocial assessment', 'interdisciplinary group', 'caregiver support', 'grief counseling', 'Medicare hospice benefit', 'care planning', 'family support'],
-    summary: 'Recent MSW graduate ({school}, {grad}){lic} drawn to end-of-life care, with training in psychosocial assessment, grief and bereavement support, and family-centered care planning. Comfortable having hard conversations with warmth and presence. {interestClause}',
+    summary: '{lic} with an {school} ({grad}) and a year of experience providing psychosocial assessment and steady, trauma-informed support to clients and families navigating high-stakes systems. {interestClause}',
     bullets: [
-      'Completed psychosocial assessments for patients and families facing [terminal illness / serious illness], contributing to interdisciplinary care plans',
-      'Supported caregivers and families through anticipatory grief, providing counseling and connecting them to bereavement resources',
-      'Facilitated conversations about goals of care and advance directives with patients and families',
-      'Participated in interdisciplinary group meetings, advocating for patients’ psychosocial and spiritual needs',
+      'Completed 50+ psychosocial assessments for clients and families navigating legal and clinical systems, contributing to individualized care plans',
+      'Supported clients and families through crisis and uncertainty, providing counseling and connecting them to community resources',
+      'Facilitated difficult conversations with clients and families about next steps, care planning, and available services',
+      'Coordinated with attorneys, clinicians, and community organizations, advocating for clients’ psychosocial needs within an interdisciplinary team',
     ],
-    letter: 'I am drawn to hospice work because it asks for full presence — sitting with patients and families in the hardest season, helping them name what matters, and making sure the psychosocial side of care gets equal weight on the interdisciplinary team. My training gave me both the assessment skills and the steadiness this work requires.' },
+    letter: 'I am drawn to work that asks for full presence — sitting with people in the hardest season, helping them name what matters, and making sure the psychosocial side of care gets equal weight on an interdisciplinary team. My year of forensic social work experience gave me both the assessment skills and the steadiness this kind of work requires.' },
   { id: 'crisis', label: 'Crisis / Advocacy',
     kw: ['crisis intervention', 'de-escalation', 'suicide risk assessment', 'safety planning', 'victim advocacy', 'trauma-informed care', 'hotline', 'community referrals', 'safety assessment', 'documentation'],
-    summary: 'Recent MSW graduate ({school}, {grad}){lic} trained in crisis intervention, risk assessment, and trauma-informed advocacy. Calm under pressure, with practicum experience supporting people in acute crisis and connecting them to safety and services. {interestClause}',
+    summary: '{lic} with an {school} ({grad}) and a year of hands-on crisis-intervention and advocacy experience, providing safety planning and trauma-informed support to a caseload of justice-involved youth. {interestClause}',
     bullets: [
-      'Provided crisis intervention and emotional support to [callers / walk-in clients / survivors], conducting suicide and safety risk assessments',
-      'Developed collaborative safety plans and warm-referred clients to [shelter / counseling / legal / medical] services',
-      'Advocated for [survivors of domestic violence / crime victims] through [court accompaniment / systems navigation / benefits applications]',
-      'Documented crisis contacts accurately and participated in debriefs to strengthen team response',
+      'Provided crisis intervention and safety planning for a caseload of 10+ clients across detention and community settings',
+      'Completed 50+ intake and psychosocial risk assessments, informing individualized treatment and legal-support strategies',
+      'Connected 20+ clients to therapy, academic accommodations, and medical services through warm referrals, confirming linkage',
+      'Coordinated with attorneys, clinicians, and community organizations to advocate for clients and ensure continuity of care',
     ],
-    letter: 'Crisis work fits how I operate: I stay calm, listen hard, assess risk quickly, and move people toward safety with real warm handoffs rather than a phone number on a sticky note. My training in trauma-informed practice and risk assessment prepared me to contribute from day one.' },
+    letter: 'Crisis and advocacy work fits how I operate: I stay calm, listen hard, assess risk quickly, and move people toward safety and services with real warm handoffs. My year of forensic social work experience — crisis intervention, safety planning, and trauma-informed advocacy for justice-involved youth — prepared me to contribute from day one.' },
   { id: 'program', label: 'Program Coordinator',
     kw: ['program coordination', 'outreach', 'community partnerships', 'data collection', 'grant reporting', 'volunteer coordination', 'outcomes', 'event planning', 'case tracking', 'stakeholder engagement'],
-    summary: 'Recent MSW graduate ({school}, {grad}){lic} combining direct-practice training with macro skills in program coordination, outreach, and outcomes tracking. Organized, data-comfortable, and skilled at building community partnerships. {interestClause}',
+    summary: '{lic} with an {school} ({grad}) combining direct-practice forensic social work experience with macro skills in program coordination, data collection, and community-partnership building. {interestClause}',
     bullets: [
-      'Coordinated [program name/type] serving [X] participants, managing scheduling, outreach, and day-to-day logistics',
-      'Collected and organized program data for [grant / funder / agency] reporting, tracking outcomes against targets',
-      'Built partnerships with [community organizations / schools / providers] to expand referrals and program reach',
-      'Recruited, trained, and supported [volunteers / interns], improving retention and program consistency',
+      'Coordinated services for a caseload of 10+ clients, managing scheduling, documentation, and day-to-day case logistics across detention and community settings',
+      'Collected and organized case data across 50+ intakes and psychosocial assessments, supporting reporting and continuity of care',
+      'Built and maintained partnerships with attorneys, clinicians, and community organizations to expand referrals and program reach',
+      'Led a 30+ post social media campaign and independent research on program outreach and engagement as a research assistant',
     ],
-    letter: 'I bring a social worker’s eye to program work: every spreadsheet row is a person, and every partnership is a service someone can actually reach. My training combined direct practice with program coordination, data collection, and reporting, and I would love to put both to work for your team.' },
+    letter: 'I bring a social worker’s eye to program work: every spreadsheet row is a person, and every partnership is a service someone can actually reach. My forensic social work experience combined direct practice with data collection and court-ready reporting, and my research background includes leading a 30+ post social media campaign and surveying 100+ community sites for a public-health initiative. I’d love to put both program-coordination and direct-practice skills to work for your team.' },
 ];
 
-let kitId = load(LS.ui, {}).kitId || 'case';
+let kitId = load(LS.ui, {}).kitId || 'forensic';
 
 function currentKit() { return KITS.find((k) => k.id === kitId) || KITS[0]; }
 
+// Turns a profile's license status into a lead phrase, e.g. "Licensed Master Social Worker (LMSW, Louisiana)"
+// for a licensed user, "LMSW candidate (Louisiana)" for a candidate/eligible user, or a plain degree fallback
+// for a user who hasn't started licensure — so the tailor kit summaries read right for anyone using the app.
+const LIC_EXPAND = { LMSW: 'Licensed Master Social Worker', LSW: 'Licensed Social Worker' };
+function licenseLead(p) {
+  const raw = (p.pLicense || '').trim();
+  if (!raw) return 'MSW graduate';
+  const m = raw.match(/^(.*?)\s*\(([^)]+)\)\s*$/);
+  const cred = (m ? m[1] : raw).trim();
+  const state = m ? m[2].trim() : '';
+  if (/candidate|eligible/i.test(cred)) return state ? `${cred} (${state})` : cred;
+  if (LIC_EXPAND[cred]) return state ? `${LIC_EXPAND[cred]} (${cred}, ${state})` : LIC_EXPAND[cred];
+  return state ? `${cred} (${state})` : cred;
+}
+
 function tailorMerge(str) {
   const p = readProfile();
-  const lic = p.pLicense ? `, ${p.pLicense}` : '';
+  const school = degreePhrase(p);
+  const grad = p.pGrad || '[grad date]';
+  const lic = licenseLead(p);
   const interests = (p.pInterests || '').trim();
   return str
-    .replace('{school}', p.pSchool || 'MSW, Tulane University')
-    .replace('{grad}', p.pGrad || '[grad date]')
-    .replace('{lic}', lic)
-    .replace('{interestClause}', interests ? `Particular interest in ${interests}.` : '');
+    .replace(/\{school\}/g, school)
+    .replace(/\{grad\}/g, grad)
+    .replace(/\{lic\}/g, lic)
+    .replace(/\{interestClause\}/g, interests ? `Particular interest in ${interests}.` : '');
 }
 
 function renderTailor() {
@@ -908,7 +1078,7 @@ $('bulletList').addEventListener('click', (e) => {
 });
 
 // --- ATS scan: which role keywords appear in the JD, and of those, which are in your resume ---
-const GENERIC_KW = ['MSW', 'social work', 'assessment', 'documentation', 'case management', 'community resources', 'trauma-informed', 'crisis intervention', 'treatment planning', 'advocacy', 'bilingual', 'Spanish', 'confidentiality', 'HIPAA', 'collaboration', 'referrals', 'LMSW', 'LSW', 'ASW', 'LCSW'];
+const GENERIC_KW = ['MSW', 'social work', 'assessment', 'documentation', 'case management', 'community resources', 'trauma-informed', 'crisis intervention', 'treatment planning', 'advocacy', 'bilingual', 'Spanish', 'confidentiality', 'HIPAA', 'collaboration', 'referrals', 'LMSW', 'LSW', 'ASW', 'LCSW', 'forensic', 'juvenile justice', 'psychosocial assessment'];
 
 $('jdScan').addEventListener('click', () => {
   const jd = $('jdText').value.trim().toLowerCase();
@@ -933,24 +1103,32 @@ $('jdScan').addEventListener('click', () => {
 });
 
 // --- Cover letter ---
-$('clGen').addEventListener('click', () => {
-  const p = readProfile();
-  const kit = currentKit();
-  const title = $('clTitle').value.trim() || `${kit.label} position`;
-  const org = $('clOrg').value.trim() || '[Organization]';
-  const mgr = $('clMgr').value.trim();
-  const why = $('clWhy').value.trim();
+// Shared builder: used by the Tailor tab's generator below AND the Auto Apply tab, so the
+// letter structure (greeting → LMSW-forward opener → kit paragraph → experience → close) stays
+// identical in both places. Pure function of (profile, kit, {title, org, mgr, why}) — no DOM reads.
+function buildCoverLetter(p, kit, opts) {
+  opts = opts || {};
+  const title = (opts.title || '').trim() || `${kit.label} position`;
+  const org = (opts.org || '').trim() || '[Organization]';
+  const mgr = (opts.mgr || '').trim();
+  const why = (opts.why || '').trim();
   const name = p.pName || '[Your name]';
-  const lic = p.pLicense ? ` and ${/candidate|eligible/i.test(p.pLicense) ? 'am an ' + p.pLicense : 'hold my ' + p.pLicense}` : '';
+  const rawLic = (p.pLicense || '').trim();
+  const isCandidate = /candidate|eligible/i.test(rawLic);
+  const gradPart = p.pGrad ? ` (${p.pGrad})` : '';
+  const openLine = rawLic && !isCandidate
+    ? `I am a ${licenseLead(p)} with an ${degreePhrase(p)}${gradPart}, and this role is exactly the kind of work I’ve built my practice around.`
+    : rawLic && isCandidate
+    ? `I am completing my ${degreePhrase(p)}${gradPart} and am ${licenseLead(p)}, and this role is exactly the kind of work I trained for.`
+    : `I recently earned my ${degreePhrase(p)}${gradPart}, and this role is exactly the kind of work I trained for.`;
   const field = (p.pField || '').trim();
   const fieldPara = field
-    ? `During my program I completed supervised field placements including ${field.split('\n').join('; ')}. That experience taught me to hit the ground running in a real caseload environment.`
-    : 'My supervised field placements gave me direct, hands-on experience with real caseloads, documentation standards, and interdisciplinary collaboration.';
+    ? `My experience includes ${field.split('\n').join('; ')}. That experience taught me to hit the ground running in a real caseload environment.`
+    : 'My year of forensic social work experience gave me direct, hands-on experience with real caseloads, court-ready documentation, and interdisciplinary collaboration across legal, clinical, and community systems.';
   const whyLine = why ? ` I was especially excited to see ${why} — it aligns closely with where I want to grow.` : '';
-  $('clOut').value =
-`Dear ${mgr || 'Hiring Manager'},
+  return `Dear ${mgr || 'Hiring Manager'},
 
-I am writing to apply for the ${title} at ${org}. I recently earned my ${degreePhrase(p)}${p.pGrad ? ` (${p.pGrad})` : ''}${lic}, and this role is exactly the kind of work I trained for.${whyLine}
+I am writing to apply for the ${title} at ${org}. ${openLine}${whyLine}
 
 ${kit.letter}
 
@@ -960,6 +1138,17 @@ I would welcome the chance to talk about how I can contribute to your team. Than
 
 Sincerely,
 ${name}${p.pEmail ? '\n' + p.pEmail : ''}`;
+}
+
+$('clGen').addEventListener('click', () => {
+  const p = readProfile();
+  const kit = currentKit();
+  $('clOut').value = buildCoverLetter(p, kit, {
+    title: $('clTitle').value.trim(),
+    org: $('clOrg').value.trim(),
+    mgr: $('clMgr').value.trim(),
+    why: $('clWhy').value.trim(),
+  });
   toast('Letter generated — personalize before sending');
 });
 $('clCopy').addEventListener('click', () => {
@@ -968,13 +1157,203 @@ $('clCopy').addEventListener('click', () => {
   navigator.clipboard.writeText(txt).then(() => toast('Letter copied ✓'));
 });
 
+/* ============================= AUTO APPLY ============================= */
+
+// Auto-detect a role kit id from a job title when the tracker item has no explicit kit set.
+// Order matters — first matching rule wins (mirrors how these role types read in real postings).
+function detectKitId(title) {
+  const t = (title || '').toLowerCase();
+  if (/forensic|juvenile|court|mitigation/.test(t)) return 'forensic';
+  if (/hospital|medical|discharge/.test(t)) return 'medical';
+  if (/school/.test(t)) return 'school';
+  if (/hospice|palliative/.test(t)) return 'hospice';
+  if (/crisis|advocate|hotline/.test(t)) return 'crisis';
+  if (/child|family|welfare|foster/.test(t)) return 'child';
+  if (/coordinator|program/.test(t)) return 'program';
+  if (/mental|behavioral|therapist|counselor/.test(t)) return 'bh';
+  return 'case';
+}
+
+function resolveKit(item) {
+  const id = (item && item.kit) || detectKitId(item && item.title);
+  return KITS.find((k) => k.id === id) || KITS.find((k) => k.id === 'case') || KITS[0];
+}
+
+function savedTrackerJobs() { return tracker.filter((j) => j.status === 'Saved'); }
+
+// Which of this kit's keywords (+ the generic ATS pool) actually show up in a pasted JD.
+function jdKeywordsFor(kit, jdText) {
+  const jd = (jdText || '').trim().toLowerCase();
+  if (!jd) return [];
+  const pool = [...new Set([...kit.kw, ...GENERIC_KW])];
+  return pool.filter((k) => jd.includes(k.toLowerCase()));
+}
+
+// Builds the full tailored resume text for one job: real header/contact block from pResume,
+// the SUMMARY section swapped for this kit's merged summary, a per-job highlights block of the
+// kit's bullets, and (if JD keywords matched) a KEYWORDS line.
+function buildTailoredResume(item, kit, jdKeywords) {
+  const p = readProfile();
+  const base = p.pResume || '';
+  const tailoredSummary = tailorMerge(kit.summary);
+  const sumRe = /SUMMARY\n[\s\S]*?(?=\n\n[A-Z])/;
+  let resume;
+  if (sumRe.test(base)) {
+    resume = base.replace(sumRe, `SUMMARY\n${tailoredSummary}`);
+  } else if (base) {
+    resume = `SUMMARY\n${tailoredSummary}\n\n${base}`;
+  } else {
+    resume = `SUMMARY\n${tailoredSummary}`;
+  }
+  const title = (item && item.title) || 'This Role';
+  const org = (item && item.org) || 'Employer';
+  const highlights = kit.bullets.map((b) => `- ${b}`).join('\n');
+  resume += `\n\nTARGETED HIGHLIGHTS — ${title} @ ${org}\n${highlights}`;
+  if (jdKeywords && jdKeywords.length) {
+    resume += `\n\nKEYWORDS FROM POSTING: ${jdKeywords.join(', ')}`;
+  }
+  return resume;
+}
+
+function packetFilename(org, kind) {
+  const safe = (org || 'Employer').replace(/[^a-z0-9]+/gi, '_').replace(/^_+|_+$/g, '') || 'Employer';
+  return `Kai_Ridley_LMSW_${kind}_${safe}.txt`;
+}
+
+function generatePacket(item) {
+  const p = readProfile();
+  const kit = resolveKit(item);
+  const jdKeywords = jdKeywordsFor(kit, $('applyJD').value);
+  return {
+    item, kit, applied: false,
+    resume: buildTailoredResume(item, kit, jdKeywords),
+    letter: buildCoverLetter(p, kit, { title: item.title, org: item.org }),
+  };
+}
+
+let applySelected = new Set();
+let applyPackets = [];
+
+function renderApply() {
+  const jobs = savedTrackerJobs();
+  const listEl = $('applyList');
+  const emptyEl = $('applyEmpty');
+  const validIds = new Set(jobs.map((j) => j.id));
+  [...applySelected].forEach((id) => { if (!validIds.has(id)) applySelected.delete(id); });
+
+  if (!jobs.length) {
+    listEl.innerHTML = '';
+    listEl.style.display = 'none';
+    emptyEl.style.display = '';
+  } else {
+    emptyEl.style.display = 'none';
+    listEl.style.display = '';
+    listEl.innerHTML = jobs.map((j) => {
+      const kit = resolveKit(j);
+      const auto = !j.kit;
+      return `
+      <label class="applyjob">
+        <input type="checkbox" class="applyChk" data-id="${esc(j.id)}" ${applySelected.has(j.id) ? 'checked' : ''}>
+        <span class="applyjob-main">
+          <b>${esc(j.title)}</b> <span class="muted">— ${esc(j.org)}${j.loc ? ', ' + esc(j.loc) : ''}</span><br>
+          <span class="muted" style="font-size:.8rem">${auto ? 'auto-detected role type: ' : 'role type: '}${esc(kit.label)}
+            ${j.link ? ' · <span style="color:var(--sky)">posting link saved</span>' : ' · no posting link saved'}</span>
+        </span>
+      </label>`;
+    }).join('');
+  }
+  $('applySelectAll').checked = jobs.length > 0 && jobs.every((j) => applySelected.has(j.id));
+  $('applyCount').textContent = `${applySelected.size} selected`;
+}
+
+$('applyList').addEventListener('change', (e) => {
+  if (!e.target.classList.contains('applyChk')) return;
+  const id = e.target.dataset.id;
+  if (e.target.checked) applySelected.add(id); else applySelected.delete(id);
+  const jobs = savedTrackerJobs();
+  $('applySelectAll').checked = jobs.length > 0 && jobs.every((j) => applySelected.has(j.id));
+  $('applyCount').textContent = `${applySelected.size} selected`;
+});
+$('applySelectAll').addEventListener('change', (e) => {
+  const jobs = savedTrackerJobs();
+  if (e.target.checked) jobs.forEach((j) => applySelected.add(j.id));
+  else applySelected.clear();
+  renderApply();
+});
+
+function renderApplyResults() {
+  const el = $('applyResults');
+  if (!applyPackets.length) { el.innerHTML = ''; return; }
+  el.innerHTML = applyPackets.map((pk, i) => `
+    <div class="packet">
+      <h3>${esc(pk.item.title)} — ${esc(pk.item.org)} <span class="muted" style="font-weight:400">(${esc(pk.kit.label)})</span></h3>
+      <label>Tailored resume</label>
+      <textarea rows="9" readonly>${esc(pk.resume)}</textarea>
+      <label>Cover letter</label>
+      <textarea rows="9" readonly>${esc(pk.letter)}</textarea>
+      <div class="row" style="margin-top:10px">
+        <button class="btn" data-act="copyResume" data-i="${i}">Copy resume</button>
+        <button class="btn" data-act="copyLetter" data-i="${i}">Copy letter</button>
+        <button class="btn" data-act="dlResume" data-i="${i}">Download resume (.txt)</button>
+        <button class="btn" data-act="dlLetter" data-i="${i}">Download letter (.txt)</button>
+        ${pk.item.link ? `<a class="btn" href="${esc(pk.item.link)}" target="_blank" rel="noopener">Open posting ↗</a>` : ''}
+        <button class="btn primary" data-act="markApplied" data-i="${i}" ${pk.applied ? 'disabled' : ''}>${pk.applied ? 'Applied ✓' : 'Mark applied ✓'}</button>
+      </div>
+    </div>`).join('');
+}
+
+$('applyResults').addEventListener('click', (e) => {
+  const btn = e.target.closest('button[data-act]');
+  if (!btn) return;
+  const pk = applyPackets[+btn.dataset.i];
+  if (!pk) return;
+  const act = btn.dataset.act;
+  if (act === 'copyResume') navigator.clipboard.writeText(pk.resume).then(() => toast('Resume copied ✓'));
+  if (act === 'copyLetter') navigator.clipboard.writeText(pk.letter).then(() => toast('Letter copied ✓'));
+  if (act === 'dlResume') download(packetFilename(pk.item.org, 'Resume'), pk.resume, 'text/plain');
+  if (act === 'dlLetter') download(packetFilename(pk.item.org, 'CoverLetter'), pk.letter, 'text/plain');
+  if (act === 'markApplied') {
+    const t = tracker.find((j) => j.id === pk.item.id);
+    if (!t) return;
+    t.status = 'Applied';
+    save(LS.tracker, tracker);
+    pk.applied = true;
+    applySelected.delete(t.id);
+    renderTracker(); // also re-renders the Auto Apply job list (renderApply is called at the end of renderTracker)
+    renderApplyResults();
+    toast(`Marked "${t.title}" as Applied ✓`);
+  }
+});
+
+$('applyRunBtn').addEventListener('click', () => {
+  const jobs = savedTrackerJobs().filter((j) => applySelected.has(j.id));
+  if (!jobs.length) return toast('Select at least one saved job first');
+  applyPackets = jobs.map(generatePacket);
+  renderApplyResults();
+  // Staggered tab-opens, same pattern as "Open all boards" on the Find Jobs tab.
+  jobs.forEach((j, i) => { if (j.link) setTimeout(() => window.open(j.link, '_blank'), i * 150); });
+  toast(`Generated ${applyPackets.length} packet${applyPackets.length === 1 ? '' : 's'} ✓ — personalize, then send`);
+});
+
+$('applyDownloadAll').addEventListener('click', () => {
+  if (!applyPackets.length) return toast('Generate packets first');
+  const divider = '\n\n' + '='.repeat(70) + '\n\n';
+  const text = applyPackets.map((pk) =>
+    `${pk.item.title} — ${pk.item.org} (${pk.kit.label})\n` +
+    `${'-'.repeat(40)}\nRESUME\n${'-'.repeat(40)}\n${pk.resume}\n\n` +
+    `${'-'.repeat(40)}\nCOVER LETTER\n${'-'.repeat(40)}\n${pk.letter}`
+  ).join(divider);
+  download('Kai_Ridley_application_packets.txt', text, 'text/plain');
+});
+
 /* ============================= INIT ============================= */
 
 loadProfile();
 renderFind();
 renderOrgs();
-renderTracker();
+renderTracker(); // also renders Auto Apply's job list (see end of renderTracker)
 renderTailor();
+renderApply();
 </script>
 </body>
 </html>
