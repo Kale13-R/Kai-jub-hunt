@@ -161,6 +161,15 @@
   .callout { border-left: 4px solid var(--green-soft); background: var(--chip); padding: 12px 16px; border-radius: 0 10px 10px 0; font-size: .9rem; margin: 12px 0; }
   .warn { border-left-color: var(--amber); }
 
+  /* tailor */
+  .kwchip { display: inline-block; font-size: .82rem; font-weight: 600; padding: 5px 12px;
+            border-radius: 999px; border: 1px solid var(--line); background: var(--chip); margin: 0 6px 6px 0; }
+  .kwchip.hit  { border-color: var(--green-soft); color: var(--green); }
+  .kwchip.miss { border-color: var(--amber); color: var(--amber); }
+  .bullet { display: flex; gap: 10px; align-items: flex-start; border: 1px solid var(--line);
+            background: var(--bg); border-radius: 10px; padding: 10px 14px; margin-top: 8px; font-size: .9rem; }
+  .bullet span { flex: 1; }
+  .scanhead { font-weight: 700; font-size: .9rem; margin: 16px 0 8px; }
   #toast {
     position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
     background: var(--ink); color: var(--bg); padding: 10px 20px; border-radius: 10px;
@@ -178,6 +187,7 @@
     <p>Entry-level MSW jobs · New Orleans · Chicago · Southern California</p>
     <nav id="nav">
       <button data-tab="find" class="on">🔎 Find Jobs</button>
+      <button data-tab="tailor">✍️ Tailor</button>
       <button data-tab="orgs">🏥 Employers</button>
       <button data-tab="track">📋 Tracker</button>
       <button data-tab="lic">🪪 Licensing</button>
@@ -230,6 +240,59 @@
       <li><b>Your field placements count as experience.</b> List practicum hours and settings on your resume like jobs — agencies expect it from MSW grads.</li>
       <li><b>Set alerts.</b> Once a search looks right on Indeed/LinkedIn, save it as a daily email alert so postings come to you.</li>
     </ul>
+  </div>
+</section>
+
+<!-- ============ TAILOR ============ -->
+<section class="tab" id="tab-tailor">
+  <div class="card">
+    <h2>Tailor your application</h2>
+    <p class="muted tight">Pick the type of role you're applying to and everything below adapts — summary, bullets, keywords, and cover letter. It pulls from your <b>My Profile</b> info, so the more you've filled in there, the better the output.</p>
+    <div class="chips" id="tailorChips"></div>
+  </div>
+
+  <div class="card">
+    <h2>ATS keyword check</h2>
+    <p class="muted tight">Paste the job description below. This compares it against your saved resume text and flags the keywords recruiters' screening software looks for — so you know exactly what to add before applying.</p>
+    <label>Job description</label>
+    <textarea id="jdText" rows="7" placeholder="Paste the full job posting here…"></textarea>
+    <div class="row" style="margin-top:12px">
+      <button class="btn primary" id="jdScan">Scan against my resume</button>
+    </div>
+    <div id="jdResults"></div>
+  </div>
+
+  <div class="card">
+    <h2>Resume pieces for this role</h2>
+    <h3>Professional summary</h3>
+    <p class="muted tight">A role-specific summary built from your profile — put it at the top of your resume. Edit freely, then copy.</p>
+    <textarea id="sumOut" rows="4"></textarea>
+    <div class="row" style="margin-top:10px">
+      <button class="btn" id="sumRegen">↻ Regenerate</button>
+      <button class="btn primary" id="sumCopy">Copy summary</button>
+    </div>
+    <h3>Keywords to weave in</h3>
+    <p class="muted tight">The terms screening software and hiring managers look for in this role. Work the ones that are true for you into your bullets.</p>
+    <div class="chips" id="kwList"></div>
+    <h3>Suggested bullets</h3>
+    <p class="muted tight">Proven phrasings for this role — swap the [bracketed] parts for your real numbers and settings from practicum.</p>
+    <div id="bulletList"></div>
+  </div>
+
+  <div class="card">
+    <h2>Cover letter generator</h2>
+    <p class="muted tight">Fills a complete letter from your profile + this role type. Always personalize the middle before sending — but this kills the blank page.</p>
+    <div class="grid2">
+      <div><label>Job title</label><input type="text" id="clTitle" placeholder="Medical Social Worker"></div>
+      <div><label>Organization</label><input type="text" id="clOrg" placeholder="Ochsner Health"></div>
+      <div><label>Hiring manager (optional)</label><input type="text" id="clMgr" placeholder="Ms. Rivera"></div>
+      <div><label>Something specific about this org (optional, 1 sentence)</label><input type="text" id="clWhy" placeholder="e.g. your new pediatric behavioral health unit"></div>
+    </div>
+    <div class="row" style="margin-top:12px">
+      <button class="btn primary" id="clGen">Generate letter</button>
+      <button class="btn" id="clCopy">Copy letter</button>
+    </div>
+    <textarea id="clOut" rows="14" placeholder="Your cover letter will appear here…" style="margin-top:12px"></textarea>
   </div>
 </section>
 
@@ -697,17 +760,20 @@ $('pCopyResume').addEventListener('click', () => {
   navigator.clipboard.writeText(txt).then(() => toast('Resume copied ✓'));
 });
 
+// "MSW, Tulane University" → "MSW from Tulane University" for prose contexts
+const degreePhrase = (p) => (p.pSchool || 'MSW, Tulane University').replace(/^([^,]+),\s*/, '$1 from ');
+
 $('pitchGen').addEventListener('click', () => {
   const p = readProfile();
   const name = p.pName || '[Your name]';
-  const school = p.pSchool || 'MSW, Tulane University';
+  const school = degreePhrase(p);
   const grad = p.pGrad ? ` (${p.pGrad})` : '';
   const lic = p.pLicense ? ` I’m currently ${/candidate|eligible/i.test(p.pLicense) ? 'an ' + p.pLicense : 'licensed as ' + p.pLicense}.` : '';
   const interests = p.pInterests ? ` with a focus on ${p.pInterests}` : '';
   const field = p.pField ? ` During my program I completed field placements including ${p.pField.split('\n')[0].replace(/^\d+\s*hrs?\s*[—-]\s*/i, '')}.` : '';
   const bio = p.pBio ? ` ${p.pBio}` : '';
   $('pitchOut').value =
-    `Hi, I’m ${name}, a recent ${school}${grad} graduate${interests}.${field}${lic}${bio} ` +
+    `Hi, I’m ${name}. I recently earned my ${school}${grad}${interests}.${field}${lic}${bio} ` +
     `I’m excited to bring my training and energy to a team doing meaningful work, and I’d love to talk about how I can contribute to your organization.`;
   toast('Pitch generated — edit to taste');
 });
@@ -717,12 +783,198 @@ $('pitchCopy').addEventListener('click', () => {
   navigator.clipboard.writeText(txt).then(() => toast('Pitch copied ✓'));
 });
 
+/* ============================= TAILOR ============================= */
+
+// Per-role kits: ATS keywords, summary template, resume bullets, cover-letter middle paragraph.
+const KITS = [
+  { id: 'case', label: 'Case Manager',
+    kw: ['case management', 'needs assessment', 'service plan', 'care coordination', 'community resources', 'referrals', 'documentation', 'crisis intervention', 'advocacy', 'motivational interviewing', 'Medicaid', 'housing'],
+    summary: 'Recent MSW graduate ({school}, {grad}){lic} with hands-on case management experience from [hours] hours of supervised field practicum. Skilled in needs assessment, service planning, care coordination, and connecting clients to community resources. {interestClause}',
+    bullets: [
+      'Managed a caseload of [X] clients, completing intake assessments, individualized service plans, and ongoing progress documentation',
+      'Coordinated referrals to [housing / benefits / medical / behavioral health] resources, following up to confirm linkage and reduce service gaps',
+      'Conducted crisis intervention and safety planning for clients experiencing [housing instability / domestic violence / acute mental health needs]',
+      'Documented all client contacts in [EHR / database] within agency timelines, maintaining compliance with [Medicaid / agency / grant] requirements',
+    ],
+    letter: 'My field training centered on exactly the skills this role requires: assessing client needs, building individualized service plans, and coordinating across providers so nothing falls through the cracks. I pride myself on thorough, timely documentation and on the follow-through that turns a referral into an actual connection for a client.' },
+  { id: 'medical', label: 'Medical / Hospital SW',
+    kw: ['discharge planning', 'psychosocial assessment', 'biopsychosocial', 'interdisciplinary team', 'care transitions', 'patient advocacy', 'electronic medical record', 'family meetings', 'utilization review', 'community resources', 'end-of-life', 'crisis intervention'],
+    summary: 'Recent MSW graduate ({school}, {grad}){lic} trained in medical social work through [hours] hours of hospital-based field practicum. Experienced in psychosocial assessment, discharge planning, and collaborating with interdisciplinary teams to support patients and families through care transitions. {interestClause}',
+    bullets: [
+      'Completed psychosocial assessments for patients on a [unit type] unit, identifying barriers to discharge and coordinating post-acute services',
+      'Collaborated with physicians, nurses, and care managers in interdisciplinary rounds to develop safe discharge plans for [X] patients weekly',
+      'Facilitated family meetings around [treatment decisions / end-of-life care / placement], providing emotional support and clear information',
+      'Connected patients to [home health / SNF / hospice / transportation / financial assistance] resources, documenting in [Epic / EHR]',
+    ],
+    letter: 'My hospital practicum immersed me in the rhythm of medical social work — rapid psychosocial assessments, discharge planning under real time pressure, and advocating for patients within an interdisciplinary team. I communicate clearly with clinical staff and compassionately with families, often on the hardest day of their lives.' },
+  { id: 'bh', label: 'Behavioral / Mental Health',
+    kw: ['treatment planning', 'individual therapy', 'group therapy', 'evidence-based', 'CBT', 'trauma-informed care', 'DSM-5', 'crisis de-escalation', 'safety planning', 'co-occurring disorders', 'clinical documentation', 'psychoeducation'],
+    summary: 'Recent MSW graduate ({school}, {grad}){lic} with clinical training in evidence-based, trauma-informed mental health care from [hours] hours of supervised practicum. Experienced in intake assessment, treatment planning, and individual and group interventions. {interestClause}',
+    bullets: [
+      'Provided individual [and group] counseling to [X] clients under licensed supervision, using [CBT / DBT-informed / trauma-informed] approaches',
+      'Completed diagnostic intake assessments and collaborative treatment plans, tracking progress against measurable goals',
+      'De-escalated clients in crisis and developed collaborative safety plans, coordinating with [mobile crisis / psychiatry / family] as needed',
+      'Facilitated psychoeducation groups on [coping skills / substance use / anger management] for [X] participants',
+    ],
+    letter: 'My clinical training emphasized evidence-based, trauma-informed practice — from diagnostic assessment and treatment planning through individual and group intervention. I am committed to receiving strong supervision, growing toward clinical licensure, and meeting clients with both skill and genuine warmth.' },
+  { id: 'school', label: 'School Social Work',
+    kw: ['IEP', '504 plan', 'MTSS', 'student support', 'behavioral intervention', 'attendance', 'parent engagement', 'classroom observation', 'social-emotional learning', 'crisis response', 'mandated reporter', 'community referrals'],
+    summary: 'Recent MSW graduate ({school}, {grad}){lic} with school-based field experience supporting student wellbeing, attendance, and family engagement. Trained in social-emotional interventions, multi-tiered systems of support, and connecting families to community resources. {interestClause}',
+    bullets: [
+      'Provided individual and small-group support to [X] students addressing [attendance / behavior / grief / anxiety], coordinating with teachers and counselors',
+      'Participated in [IEP / 504 / MTSS / student support team] meetings, contributing social-emotional assessments and intervention recommendations',
+      'Built relationships with parents and caregivers through [home visits / conferences / calls], increasing family engagement in student plans',
+      'Responded to student crises alongside school staff, conducting risk assessments and coordinating follow-up care',
+    ],
+    letter: 'My school-based training taught me to meet students where they are — in classrooms, hallways, and family conversations — and to work the systems (IEP teams, MTSS, community partners) that turn concern into concrete support. I love the mix of individual work, group work, and family engagement this role offers.' },
+  { id: 'child', label: 'Child Welfare & Family',
+    kw: ['child welfare', 'family assessment', 'safety plan', 'home visits', 'court reports', 'permanency', 'mandated reporter', 'reunification', 'foster care', 'case documentation', 'trauma-informed care', 'family engagement'],
+    summary: 'Recent MSW graduate ({school}, {grad}){lic} with field training in child and family services. Skilled in family assessment, safety planning, home visiting, and trauma-informed engagement with children and caregivers. {interestClause}',
+    bullets: [
+      'Conducted family assessments and home visits for [X] families, evaluating safety, strengths, and service needs',
+      'Developed safety plans and service plans with caregivers, monitoring progress toward [reunification / permanency] goals',
+      'Prepared thorough, court-ready documentation and collaborated with [attorneys / CASA / providers] on case planning',
+      'Engaged resistant or fearful families using strengths-based, trauma-informed approaches to build working alliances',
+    ],
+    letter: 'Child welfare work demands both spine and heart — thorough assessment and documentation on one side, and genuine, trauma-informed engagement with families in crisis on the other. My training prepared me for both, and I am drawn to the responsibility this work carries.' },
+  { id: 'hospice', label: 'Hospice / Palliative',
+    kw: ['end-of-life', 'bereavement', 'advance directives', 'psychosocial assessment', 'interdisciplinary group', 'caregiver support', 'grief counseling', 'Medicare hospice benefit', 'care planning', 'family support'],
+    summary: 'Recent MSW graduate ({school}, {grad}){lic} drawn to end-of-life care, with training in psychosocial assessment, grief and bereavement support, and family-centered care planning. Comfortable having hard conversations with warmth and presence. {interestClause}',
+    bullets: [
+      'Completed psychosocial assessments for patients and families facing [terminal illness / serious illness], contributing to interdisciplinary care plans',
+      'Supported caregivers and families through anticipatory grief, providing counseling and connecting them to bereavement resources',
+      'Facilitated conversations about goals of care and advance directives with patients and families',
+      'Participated in interdisciplinary group meetings, advocating for patients’ psychosocial and spiritual needs',
+    ],
+    letter: 'I am drawn to hospice work because it asks for full presence — sitting with patients and families in the hardest season, helping them name what matters, and making sure the psychosocial side of care gets equal weight on the interdisciplinary team. My training gave me both the assessment skills and the steadiness this work requires.' },
+  { id: 'crisis', label: 'Crisis / Advocacy',
+    kw: ['crisis intervention', 'de-escalation', 'suicide risk assessment', 'safety planning', 'victim advocacy', 'trauma-informed care', 'hotline', 'community referrals', 'safety assessment', 'documentation'],
+    summary: 'Recent MSW graduate ({school}, {grad}){lic} trained in crisis intervention, risk assessment, and trauma-informed advocacy. Calm under pressure, with practicum experience supporting people in acute crisis and connecting them to safety and services. {interestClause}',
+    bullets: [
+      'Provided crisis intervention and emotional support to [callers / walk-in clients / survivors], conducting suicide and safety risk assessments',
+      'Developed collaborative safety plans and warm-referred clients to [shelter / counseling / legal / medical] services',
+      'Advocated for [survivors of domestic violence / crime victims] through [court accompaniment / systems navigation / benefits applications]',
+      'Documented crisis contacts accurately and participated in debriefs to strengthen team response',
+    ],
+    letter: 'Crisis work fits how I operate: I stay calm, listen hard, assess risk quickly, and move people toward safety with real warm handoffs rather than a phone number on a sticky note. My training in trauma-informed practice and risk assessment prepared me to contribute from day one.' },
+  { id: 'program', label: 'Program Coordinator',
+    kw: ['program coordination', 'outreach', 'community partnerships', 'data collection', 'grant reporting', 'volunteer coordination', 'outcomes', 'event planning', 'case tracking', 'stakeholder engagement'],
+    summary: 'Recent MSW graduate ({school}, {grad}){lic} combining direct-practice training with macro skills in program coordination, outreach, and outcomes tracking. Organized, data-comfortable, and skilled at building community partnerships. {interestClause}',
+    bullets: [
+      'Coordinated [program name/type] serving [X] participants, managing scheduling, outreach, and day-to-day logistics',
+      'Collected and organized program data for [grant / funder / agency] reporting, tracking outcomes against targets',
+      'Built partnerships with [community organizations / schools / providers] to expand referrals and program reach',
+      'Recruited, trained, and supported [volunteers / interns], improving retention and program consistency',
+    ],
+    letter: 'I bring a social worker’s eye to program work: every spreadsheet row is a person, and every partnership is a service someone can actually reach. My training combined direct practice with program coordination, data collection, and reporting, and I would love to put both to work for your team.' },
+];
+
+let kitId = load(LS.ui, {}).kitId || 'case';
+
+function currentKit() { return KITS.find((k) => k.id === kitId) || KITS[0]; }
+
+function tailorMerge(str) {
+  const p = readProfile();
+  const lic = p.pLicense ? `, ${p.pLicense}` : '';
+  const interests = (p.pInterests || '').trim();
+  return str
+    .replace('{school}', p.pSchool || 'MSW, Tulane University')
+    .replace('{grad}', p.pGrad || '[grad date]')
+    .replace('{lic}', lic)
+    .replace('{interestClause}', interests ? `Particular interest in ${interests}.` : '');
+}
+
+function renderTailor() {
+  chipRow('tailorChips', KITS, kitId, (id) => {
+    kitId = id; ui.kitId = id; save(LS.ui, ui);
+    renderTailor();
+  });
+  const kit = currentKit();
+  $('sumOut').value = tailorMerge(kit.summary);
+  $('kwList').innerHTML = kit.kw.map((k) => `<span class="kwchip">${esc(k)}</span>`).join('');
+  $('bulletList').innerHTML = kit.bullets.map((b, i) => `
+    <div class="bullet"><span>• ${esc(b)}</span>
+      <button class="btn small bcopy" data-i="${i}">Copy</button></div>`).join('');
+}
+
+$('sumRegen').addEventListener('click', () => { $('sumOut').value = tailorMerge(currentKit().summary); toast('Summary regenerated'); });
+$('sumCopy').addEventListener('click', () => {
+  navigator.clipboard.writeText($('sumOut').value).then(() => toast('Summary copied ✓'));
+});
+$('bulletList').addEventListener('click', (e) => {
+  const btn = e.target.closest('.bcopy');
+  if (!btn) return;
+  navigator.clipboard.writeText(currentKit().bullets[btn.dataset.i]).then(() => toast('Bullet copied ✓'));
+});
+
+// --- ATS scan: which role keywords appear in the JD, and of those, which are in your resume ---
+const GENERIC_KW = ['MSW', 'social work', 'assessment', 'documentation', 'case management', 'community resources', 'trauma-informed', 'crisis intervention', 'treatment planning', 'advocacy', 'bilingual', 'Spanish', 'confidentiality', 'HIPAA', 'collaboration', 'referrals', 'LMSW', 'LSW', 'ASW', 'LCSW'];
+
+$('jdScan').addEventListener('click', () => {
+  const jd = $('jdText').value.trim().toLowerCase();
+  if (!jd) return toast('Paste a job description first');
+  const resume = ((readProfile().pResume || '') + ' ' + (readProfile().pField || '') + ' ' + (readProfile().pBio || '')).toLowerCase();
+  const pool = [...new Set([...currentKit().kw, ...GENERIC_KW])];
+  const inJd = pool.filter((k) => jd.includes(k.toLowerCase()));
+  const hits = inJd.filter((k) => resume.includes(k.toLowerCase()));
+  const misses = inJd.filter((k) => !resume.includes(k.toLowerCase()));
+  const chip = (k, cls) => `<span class="kwchip ${cls}">${esc(k)}</span>`;
+  let html = '';
+  if (!inJd.length) {
+    html = '<p class="muted" style="margin-top:14px">No tracked keywords found in that posting — it may be a very unusual role, or try the role chip that matches it best above.</p>';
+  } else {
+    html += `<div class="scanhead">✅ In the posting AND your resume (${hits.length})</div>` +
+      (hits.length ? hits.map((k) => chip(k, 'hit')).join('') : '<span class="muted">none yet</span>');
+    html += `<div class="scanhead">⚠️ In the posting but MISSING from your resume (${misses.length}) — add the ones that are true for you</div>` +
+      (misses.length ? misses.map((k) => chip(k, 'miss')).join('') : '<span class="muted">nothing missing — nice!</span>');
+    if (!resume.trim()) html += '<div class="callout warn" style="margin-top:14px">Your resume text is empty — paste it into <b>My Profile → Resume</b> for a real comparison.</div>';
+  }
+  $('jdResults').innerHTML = html;
+});
+
+// --- Cover letter ---
+$('clGen').addEventListener('click', () => {
+  const p = readProfile();
+  const kit = currentKit();
+  const title = $('clTitle').value.trim() || `${kit.label} position`;
+  const org = $('clOrg').value.trim() || '[Organization]';
+  const mgr = $('clMgr').value.trim();
+  const why = $('clWhy').value.trim();
+  const name = p.pName || '[Your name]';
+  const lic = p.pLicense ? ` and ${/candidate|eligible/i.test(p.pLicense) ? 'am an ' + p.pLicense : 'hold my ' + p.pLicense}` : '';
+  const field = (p.pField || '').trim();
+  const fieldPara = field
+    ? `During my program I completed supervised field placements including ${field.split('\n').join('; ')}. That experience taught me to hit the ground running in a real caseload environment.`
+    : 'My supervised field placements gave me direct, hands-on experience with real caseloads, documentation standards, and interdisciplinary collaboration.';
+  const whyLine = why ? ` I was especially excited to see ${why} — it aligns closely with where I want to grow.` : '';
+  $('clOut').value =
+`Dear ${mgr || 'Hiring Manager'},
+
+I am writing to apply for the ${title} at ${org}. I recently earned my ${degreePhrase(p)}${p.pGrad ? ` (${p.pGrad})` : ''}${lic}, and this role is exactly the kind of work I trained for.${whyLine}
+
+${kit.letter}
+
+${fieldPara}
+
+I would welcome the chance to talk about how I can contribute to your team. Thank you for your time and consideration.
+
+Sincerely,
+${name}${p.pEmail ? '\n' + p.pEmail : ''}`;
+  toast('Letter generated — personalize before sending');
+});
+$('clCopy').addEventListener('click', () => {
+  const txt = $('clOut').value;
+  if (!txt) return toast('Generate a letter first');
+  navigator.clipboard.writeText(txt).then(() => toast('Letter copied ✓'));
+});
+
 /* ============================= INIT ============================= */
 
 loadProfile();
 renderFind();
 renderOrgs();
 renderTracker();
+renderTailor();
 </script>
 </body>
 </html>
