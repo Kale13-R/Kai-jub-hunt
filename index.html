@@ -181,6 +181,10 @@
   .packet { border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; margin-top: 14px; background: var(--bg); }
   .packet h3 { margin: 0 0 10px; font-size: 1rem; }
   .packet textarea { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .8rem; }
+  .fastcard { border-color: var(--green-soft); }
+  .fastprog { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+  kbd { font-size: .72rem; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        background: var(--chip); border: 1px solid var(--line); border-radius: 4px; padding: 1px 5px; margin-left: 3px; }
   #toast {
     position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
     background: var(--ink); color: var(--bg); padding: 10px 20px; border-radius: 10px;
@@ -233,6 +237,10 @@
           Filter to entry level where the board supports it
         </label>
         <p class="muted" style="margin:4px 0 0">Tip: also search <em>without</em> this filter — many MSW-friendly jobs are mislabeled as mid-level but only require the degree.</p>
+        <label style="margin-top:10px">
+          <input type="checkbox" id="remoteOnly" style="width:auto; margin-right:6px; vertical-align:-2px">
+          💻 Remote only (overrides location with &ldquo;Remote&rdquo; and applies each board's remote filter where it has one)
+        </label>
       </div>
     </div>
 
@@ -313,10 +321,13 @@
 <section class="tab" id="tab-apply">
   <div class="card">
     <h2>Pick jobs to apply to</h2>
-    <p class="muted tight">Jobs you've marked <b>Saved</b> in the Tracker show up here. Select the ones you want packets for, then run it below.</p>
+    <p class="muted tight">Jobs you've marked <b>Saved</b> in the Tracker show up here — 💻 Remote OK jobs are sorted to the top since there's no commute/relocation math to do on those. Select the ones you want packets for, then run it below.</p>
     <div class="applybar">
       <label style="margin:10px 0 0; font-weight:600; font-size:.9rem; display:flex; align-items:center; gap:8px; cursor:pointer">
         <input type="checkbox" id="applySelectAll" style="width:auto"> Select all
+      </label>
+      <label style="margin:10px 0 0; font-weight:600; font-size:.9rem; display:flex; align-items:center; gap:8px; cursor:pointer">
+        <input type="checkbox" id="applyRemoteOnly" style="width:auto"> 💻 Remote only
       </label>
       <span class="muted" id="applyCount">0 selected</span>
     </div>
@@ -333,13 +344,17 @@
 
   <div class="card">
     <h2>Run</h2>
-    <div class="row">
-      <button class="btn primary" id="applyRunBtn">🚀 Generate packets &amp; apply</button>
-      <button class="btn" id="applyDownloadAll">Download all (.txt)</button>
+    <div class="row" style="justify-content:space-between">
+      <div class="row">
+        <button class="btn primary" id="applyRunBtn">🚀 Generate packets</button>
+        <button class="btn" id="applyDownloadAll">Download all (.txt)</button>
+      </div>
+      <div class="chips" id="applyModeChips" style="margin:0"></div>
     </div>
     <div class="callout warn">
-      ⚠️ Honest limits: this is a static page — it can&rsquo;t press &ldquo;Submit&rdquo; on an employer&rsquo;s site for you. What it <i>does</i> do is prepare everything: a tailored resume, a cover letter, and an opened application tab for each selected job, so the actual apply is just pasting in and hitting submit — usually under a minute per job. Click <b>Mark applied ✓</b> on a packet once you've sent it, to log it back to the Tracker.
+      ⚠️ Honest limits: this is a static page — it can&rsquo;t press &ldquo;Submit&rdquo; on an employer&rsquo;s site for you. What it <i>does</i> do is prepare everything: a tailored resume and a cover letter per job, and a one-click posting link, so the actual apply is just pasting in and hitting submit — usually under a minute per job. Click <b>Mark applied ✓</b> once you've sent it, to log it back to the Tracker.
     </div>
+    <div id="applyFast"></div>
     <div id="applyResults"></div>
   </div>
 </section>
@@ -369,6 +384,9 @@
       <div><label>Posting link</label><input type="url" id="tLink" placeholder="https://…"></div>
       <div><label>Role type (for tailoring)</label><select id="tKit"><option value="">— auto-detect —</option></select></div>
     </div>
+    <label style="margin-top:14px; display:flex; align-items:center; gap:8px; cursor:pointer; font-weight:600; font-size:.9rem">
+      <input type="checkbox" id="tRemote" style="width:auto"> 💻 Remote OK
+    </label>
     <div class="row" style="margin-top:12px">
       <button class="btn primary" id="tAdd">＋ Add job</button>
       <button class="btn" id="tExport">Export CSV</button>
@@ -377,7 +395,7 @@
     </div>
     <div class="tablewrap">
       <table id="tTable" style="display:none">
-        <thead><tr><th>Job</th><th>Location</th><th>Status</th><th>Role type</th><th>Added</th><th>Notes</th><th></th></tr></thead>
+        <thead><tr><th>Job</th><th>Location</th><th>Status</th><th>Role type</th><th>Remote</th><th>Added</th><th>Notes</th><th></th></tr></thead>
         <tbody id="tBody"></tbody>
       </table>
     </div>
@@ -555,6 +573,7 @@ const REGIONS = [
   { id: 'oc',   label: 'Orange County', loc: 'Irvine, CA' },
   { id: 'sd',   label: 'San Diego',   loc: 'San Diego, CA' },
   { id: 'ie',   label: 'Inland Empire', loc: 'Riverside, CA' },
+  { id: 'remote', label: '💻 Remote', loc: 'Remote' },
 ];
 
 const ROLES = [
@@ -571,14 +590,20 @@ const ROLES = [
   { id: 'any',     label: 'Anything MSW',            q: 'MSW "social worker"' },
 ];
 
-// Boards: fn builds the search URL. entry = supports an entry-level filter.
+// Boards: fn builds the search URL. e = entry-level filter, r = remote-only filter.
+// Remote support: where a board has a real remote-filter param we append it (Indeed, LinkedIn,
+// Idealist, USAJOBS); everywhere else the caller already sets l = "Remote" as the location text,
+// which is the only mechanism those boards (ZipRecruiter, SimplyHired, GovernmentJobs, NASW
+// JobLink) support — no separate query param exists for them, so don't invent one.
 const BOARDS = [
-  { name: 'Indeed', why: 'Biggest volume — set an alert here', url: (q, l, e) =>
-      `https://www.indeed.com/jobs?q=${q}&l=${l}&radius=25${e ? '&sc=0kf%3Aexplvl%28ENTRY_LEVEL%29%3B' : ''}` },
-  { name: 'LinkedIn', why: 'Best for reaching recruiters directly', url: (q, l, e) =>
-      `https://www.linkedin.com/jobs/search/?keywords=${q}&location=${l}${e ? '&f_E=1%2C2' : ''}` },
-  { name: 'Idealist', why: 'Nonprofit-only — very MSW-friendly', url: (q, l) =>
-      `https://www.idealist.org/en/jobs?q=${q}&locationText=${l}` },
+  { name: 'Indeed', why: 'Biggest volume — set an alert here', url: (q, l, e, r) => {
+      const kf = `${e ? 'explvl%28ENTRY_LEVEL%29' : ''}${r ? 'attr%28DSQF7%29' : ''}`;
+      return `https://www.indeed.com/jobs?q=${q}&l=${l}&radius=25${kf ? `&sc=0kf%3A${kf}%3B` : ''}`;
+    } },
+  { name: 'LinkedIn', why: 'Best for reaching recruiters directly', url: (q, l, e, r) =>
+      `https://www.linkedin.com/jobs/search/?keywords=${q}&location=${l}${e ? '&f_E=1%2C2' : ''}${r ? '&f_WT=2' : ''}` },
+  { name: 'Idealist', why: 'Nonprofit-only — very MSW-friendly', url: (q, l, e, r) =>
+      `https://www.idealist.org/en/jobs?q=${q}&locationText=${l}${r ? '&locationType=REMOTE' : ''}` },
   { name: 'GovernmentJobs.com', why: 'County & state postings (child welfare, public MH)', url: (q, l) =>
       `https://www.governmentjobs.com/jobs?keyword=${q}&location=${l}` },
   { name: 'NASW JobLink', why: 'Social-work-only board from the professional assoc.', url: (q, l) =>
@@ -587,8 +612,8 @@ const BOARDS = [
       `https://www.ziprecruiter.com/jobs-search?search=${q}&location=${l}` },
   { name: 'SimplyHired', why: 'Aggregator — catches strays', url: (q, l) =>
       `https://www.simplyhired.com/search?q=${q}&l=${l}` },
-  { name: 'USAJOBS', why: 'Federal (VA hospitals hire lots of MSWs)', url: (q, l) =>
-      `https://www.usajobs.gov/Search/Results?k=${q}&l=${l}` },
+  { name: 'USAJOBS', why: 'Federal (VA hospitals hire lots of MSWs)', url: (q, l, e, r) =>
+      `https://www.usajobs.gov/Search/Results?k=${q}&l=${l}${r ? '&rmi=true' : ''}` },
 ];
 
 // type: health | gov | school | nonprofit | justice
@@ -653,6 +678,17 @@ const ORGS = {
     { n: 'Union Rescue Mission', t: 'nonprofit', d: 'Skid Row homeless services (LA).', u: 'https://urm.org' },
     { n: 'Anti-Recidivism Coalition', t: 'justice', d: 'Reentry & juvenile-justice-impacted community support across SoCal — case management & advocacy, forensic-SW aligned.', u: 'https://antirecidivism.org' },
   ],
+  remote: [
+    { n: 'Magellan Health', t: 'remote', d: 'National behavioral-health/EAP company hiring remote Behavioral Health Care Managers — explicitly accepts LMSW (not just LCSW) for utilization review, crisis intervention, and discharge/care coordination.', u: 'https://careers.magellanhealth.com/us/en/care-manager' },
+    { n: 'ComPsych', t: 'remote', d: 'The largest U.S. EAP provider — remote Guidance Consultant roles (LMSW/LCSW/LPC) doing telephonic intake, triage, and short-term solution-focused counseling nationwide.', u: 'https://www.compsych.com/careers/' },
+    { n: 'Vibrant Emotional Health', t: 'remote', d: 'Nonprofit administrator of the 988 Suicide & Crisis Lifeline — hires remote Bachelor’s- and Master’s-level crisis counselors and clinical managers nationwide.', u: 'https://www.vibrant.org/get-involved/work-for-us/' },
+    { n: 'Crisis Text Line', t: 'remote', d: 'National nonprofit crisis service — paid remote staff for its 24/7 text/chat line, values social-work and mental-health backgrounds.', u: 'https://www.crisistextline.org/careers/' },
+    { n: 'Included Health', t: 'remote', d: 'Virtual-first healthcare company hiring remote behavioral-health clinicians and care coordinators to help members navigate mental health care.', u: 'https://includedhealth.com/careers/clinical-jobs/' },
+    { n: 'Charlie Health', t: 'remote', d: 'Virtual intensive outpatient program for teens & young adults — remote Licensed Mental Health Therapist roles that explicitly accept LMSW, not just LCSW.', u: 'https://www.charliehealth.com/careers/clinical' },
+    { n: 'SonderMind', t: 'remote', d: 'Remote-first mental health group for independently-licensed clinicians (LCSW/LMFT/LPC) building a teletherapy caseload across 45+ states — a good LCSW-track target once you’re independently licensed.', u: 'https://www.sondermind.com/join-sondermind/' },
+    { n: 'Grow Therapy', t: 'remote', d: 'Provider platform supporting independently-licensed clinicians in building a fully remote caseload, handling credentialing & insurance billing — requires independent licensure (LCSW), a solid post-LCSW target.', u: 'https://growtherapy.com/careers/' },
+    { n: 'Rula', t: 'remote', d: 'National behavioral-health network for independently-licensed remote therapists, no minimum caseload, flexible scheduling — requires independent licensure (LCSW).', u: 'https://www.rula.com/careers/' },
+  ],
 };
 
 const ORG_TYPES = [
@@ -662,6 +698,7 @@ const ORG_TYPES = [
   { id: 'school', label: '🎓 Schools/Edu' },
   { id: 'nonprofit', label: '🤝 Nonprofit' },
   { id: 'justice', label: '⚖️ Justice/Advocacy' },
+  { id: 'remote', label: '💻 Remote' },
 ];
 
 const STATUSES = ['Saved', 'Applied', 'Interviewing', 'Offer 🎉', 'Rejected'];
@@ -719,17 +756,19 @@ function renderFind() {
   chipRow('roleChips', ROLES, ui.role, (id) => { ui.role = id; $('customQ').value = ''; save(LS.ui, ui); renderFind(); });
   const region = REGIONS.find((r) => r.id === ui.region) || REGIONS[0];
   const q = encodeURIComponent(currentQuery());
-  const l = encodeURIComponent(region.loc);
+  const remote = $('remoteOnly').checked || region.id === 'remote';
+  const l = encodeURIComponent(remote ? 'Remote' : region.loc);
   const entry = $('entryOnly').checked;
   $('boardList').innerHTML = BOARDS.map((b) => `
     <div class="board">
       <div><div class="name">${esc(b.name)}</div><div class="why">${esc(b.why)}</div></div>
-      <a href="${b.url(q, l, entry)}" target="_blank" rel="noopener">Search ↗</a>
+      <a href="${b.url(q, l, entry, remote)}" target="_blank" rel="noopener">Search ↗</a>
     </div>`).join('');
 }
 
 $('customQ').addEventListener('input', renderFind);
 $('entryOnly').addEventListener('change', renderFind);
+$('remoteOnly').addEventListener('change', renderFind);
 $('openAll').addEventListener('click', () => {
   document.querySelectorAll('#boardList a').forEach((a, i) => setTimeout(() => window.open(a.href, '_blank'), i * 120));
 });
@@ -740,8 +779,9 @@ const ORG_REGIONS = [
   { id: 'nola', label: 'New Orleans' },
   { id: 'chi', label: 'Chicago' },
   { id: 'socal', label: 'Southern California' },
+  { id: 'remote', label: '💻 Remote / Nationwide' },
 ];
-const TYPE_LABEL = { health: 'Healthcare', gov: 'Government', school: 'Schools/Edu', nonprofit: 'Nonprofit', justice: 'Justice/Advocacy' };
+const TYPE_LABEL = { health: 'Healthcare', gov: 'Government', school: 'Schools/Edu', nonprofit: 'Nonprofit', justice: 'Justice/Advocacy', remote: 'Remote' };
 
 function renderOrgs() {
   chipRow('orgRegionChips', ORG_REGIONS, ui.orgRegion === 'la' || ui.orgRegion === 'oc' || ui.orgRegion === 'sd' || ui.orgRegion === 'ie' ? 'socal' : ui.orgRegion, (id) => { ui.orgRegion = id; save(LS.ui, ui); renderOrgs(); });
@@ -785,7 +825,7 @@ function renderTracker() {
   $('tEmpty').style.display = tracker.length ? 'none' : '';
   $('tBody').innerHTML = tracker.map((j, i) => `
     <tr>
-      <td><b>${esc(j.title)}</b><br><span class="muted">${esc(j.org)}</span>
+      <td><b>${esc(j.title)}</b>${j.remote ? ' <span class="tag" style="background:var(--chip-on);color:#fff">💻 Remote</span>' : ''}<br><span class="muted">${esc(j.org)}</span>
         ${j.link ? `<br><a href="${esc(j.link)}" target="_blank" rel="noopener" style="color:var(--sky);font-size:.82rem">posting ↗</a>` : ''}</td>
       <td>${esc(j.loc)}</td>
       <td><select data-i="${i}" class="statusSel" style="border-left:4px solid ${STATUS_COLORS[j.status] || 'var(--line)'}">
@@ -793,6 +833,7 @@ function renderTracker() {
       <td><select data-i="${i}" class="kitSel">
         <option value="">— auto-detect —</option>
         ${KITS.map((k) => `<option value="${esc(k.id)}" ${k.id === j.kit ? 'selected' : ''}>${esc(k.label)}</option>`).join('')}</select></td>
+      <td style="text-align:center"><input type="checkbox" class="remoteChk" data-i="${i}" ${j.remote ? 'checked' : ''} style="width:auto"></td>
       <td class="muted">${esc(j.added)}</td>
       <td><input class="note" data-i="${i}" type="text" value="${esc(j.notes || '')}" placeholder="notes…"></td>
       <td><button class="btn small danger del" data-i="${i}">✕</button></td>
@@ -811,10 +852,11 @@ $('tAdd').addEventListener('click', () => {
   if (!title && !org) return toast('Add at least a title or organization');
   tracker.unshift({
     id: nextTrackId(), title: title || '(untitled)', org, loc: $('tLoc').value.trim(), link: $('tLink').value.trim(),
-    status: 'Saved', notes: '', added: new Date().toLocaleDateString(), kit: $('tKit').value,
+    status: 'Saved', notes: '', added: new Date().toLocaleDateString(), kit: $('tKit').value, remote: $('tRemote').checked,
   });
   ['tTitle', 'tOrg', 'tLoc', 'tLink'].forEach((id) => ($(id).value = ''));
   $('tKit').value = '';
+  $('tRemote').checked = false;
   save(LS.tracker, tracker); renderTracker(); toast('Job added ✓');
 });
 
@@ -824,6 +866,7 @@ $('tBody').addEventListener('change', (e) => {
   if (e.target.classList.contains('statusSel')) tracker[i].status = e.target.value;
   if (e.target.classList.contains('kitSel')) tracker[i].kit = e.target.value;
   if (e.target.classList.contains('note')) tracker[i].notes = e.target.value;
+  if (e.target.classList.contains('remoteChk')) tracker[i].remote = e.target.checked;
   save(LS.tracker, tracker); renderTracker();
 });
 $('tBody').addEventListener('click', (e) => {
@@ -842,8 +885,8 @@ function download(name, text, type) {
 }
 
 $('tExport').addEventListener('click', () => {
-  const rows = [['Title', 'Organization', 'Location', 'Status', 'Role type', 'Added', 'Link', 'Notes'],
-    ...tracker.map((j) => [j.title, j.org, j.loc, j.status, j.kit || '', j.added, j.link, j.notes])];
+  const rows = [['Title', 'Organization', 'Location', 'Status', 'Role type', 'Remote', 'Added', 'Link', 'Notes'],
+    ...tracker.map((j) => [j.title, j.org, j.loc, j.status, j.kit || '', j.remote ? 'Yes' : '', j.added, j.link, j.notes])];
   const csv = rows.map((r) => r.map((c) => `"${String(c ?? '').replace(/"/g, '""')}"`).join(',')).join('\n');
   download('job-tracker.csv', csv, 'text/csv');
 });
@@ -1179,7 +1222,14 @@ function resolveKit(item) {
   return KITS.find((k) => k.id === id) || KITS.find((k) => k.id === 'case') || KITS[0];
 }
 
-function savedTrackerJobs() { return tracker.filter((j) => j.status === 'Saved'); }
+// Remote-first: no relocation math on those, so they're quickest to knock out. Stable sort keeps
+// everything else in its existing (most-recently-saved-first) order.
+function savedTrackerJobs() {
+  const jobs = tracker.filter((j) => j.status === 'Saved');
+  const remoteOnly = $('applyRemoteOnly') && $('applyRemoteOnly').checked;
+  return (remoteOnly ? jobs.filter((j) => j.remote) : jobs.slice())
+    .sort((a, b) => (b.remote ? 1 : 0) - (a.remote ? 1 : 0));
+}
 
 // Which of this kit's keywords (+ the generic ATS pool) actually show up in a pasted JD.
 function jdKeywordsFor(kit, jdText) {
@@ -1233,6 +1283,88 @@ function generatePacket(item) {
 
 let applySelected = new Set();
 let applyPackets = [];
+let applyIndex = 0;
+if (!ui.applyMode) ui.applyMode = 'fast';
+
+const APPLY_MODES = [
+  { id: 'fast', label: '⚡ Fast Apply' },
+  { id: 'all', label: '📋 All at once' },
+];
+function setApplyMode(id) { ui.applyMode = id; save(LS.ui, ui); renderApplyMode(); renderApplyOutput(); }
+function renderApplyMode() { chipRow('applyModeChips', APPLY_MODES, ui.applyMode, setApplyMode); }
+
+// Dispatches to whichever view is active — Fast Apply (one job at a time, fewest clicks) or the
+// legacy all-at-once scroll list. Only one of #applyFast / #applyResults is ever populated.
+function renderApplyOutput() {
+  if (ui.applyMode === 'fast') { $('applyResults').innerHTML = ''; renderApplyFast(); }
+  else { $('applyFast').innerHTML = ''; renderApplyResults(); }
+}
+
+function renderApplyFast() {
+  const el = $('applyFast');
+  if (!applyPackets.length) { el.innerHTML = ''; return; }
+  applyIndex = Math.max(0, Math.min(applyIndex, applyPackets.length - 1));
+  const pk = applyPackets[applyIndex];
+  const doneCount = applyPackets.filter((p) => p.applied).length;
+  el.innerHTML = `
+    <div class="packet fastcard">
+      <div class="fastprog">
+        <span class="muted">Job ${applyIndex + 1} of ${applyPackets.length} &middot; ${doneCount} applied so far</span>
+        <div class="row" style="gap:6px">
+          <button class="btn small" id="fastPrev" ${applyIndex === 0 ? 'disabled' : ''}>&larr; Prev</button>
+          <button class="btn small" id="fastNext" ${applyIndex === applyPackets.length - 1 ? 'disabled' : ''}>Next &rarr;</button>
+        </div>
+      </div>
+      <h3>${esc(pk.item.title)} — ${esc(pk.item.org)}
+        ${pk.item.remote ? '<span class="tag" style="background:var(--chip-on);color:#fff">💻 Remote</span>' : ''}
+        <span class="muted" style="font-weight:400">(${esc(pk.kit.label)})</span></h3>
+      <label>Tailored resume</label>
+      <textarea rows="9" readonly>${esc(pk.resume)}</textarea>
+      <label>Cover letter</label>
+      <textarea rows="9" readonly>${esc(pk.letter)}</textarea>
+      <div class="row" style="margin-top:10px">
+        <button class="btn" id="fastCopyResume">Copy resume <kbd>R</kbd></button>
+        <button class="btn" id="fastCopyLetter">Copy letter <kbd>L</kbd></button>
+        ${pk.item.link ? `<a class="btn" href="${esc(pk.item.link)}" target="_blank" rel="noopener" id="fastOpen">Open posting ↗ <kbd>O</kbd></a>` : '<span class="muted">no posting link saved</span>'}
+        <button class="btn primary" id="fastApplied" ${pk.applied ? 'disabled' : ''}>${pk.applied ? 'Applied ✓' : 'Mark applied & next →'} <kbd>Enter</kbd></button>
+      </div>
+      <p class="muted" style="margin-top:8px; font-size:.78rem">Keyboard shortcuts (while this tab is open): <kbd>R</kbd> copy resume · <kbd>L</kbd> copy letter · <kbd>O</kbd> open posting · <kbd>Enter</kbd> mark applied &amp; advance</p>
+    </div>`;
+  $('fastPrev').onclick = () => { applyIndex--; renderApplyFast(); };
+  $('fastNext').onclick = () => { applyIndex++; renderApplyFast(); };
+  $('fastCopyResume').onclick = () => navigator.clipboard.writeText(pk.resume).then(() => toast('Resume copied ✓'));
+  $('fastCopyLetter').onclick = () => navigator.clipboard.writeText(pk.letter).then(() => toast('Letter copied ✓'));
+  $('fastApplied').onclick = markFastApplied;
+}
+
+function markFastApplied() {
+  const pk = applyPackets[applyIndex];
+  if (!pk || pk.applied) return;
+  const t = tracker.find((j) => j.id === pk.item.id);
+  if (t) { t.status = 'Applied'; save(LS.tracker, tracker); }
+  pk.applied = true;
+  applySelected.delete(pk.item.id);
+  renderTracker(); // also re-renders the applyList picker (see comment at end of renderTracker)
+  if (applyIndex < applyPackets.length - 1) applyIndex++;
+  renderApplyFast();
+  toast(`Marked "${pk.item.title}" as Applied ✓`);
+}
+
+// Keyboard shortcuts only fire in Fast Apply mode, while the Auto Apply tab is visible, and
+// while focus isn't in a text field (so they never hijack typing in the job-description textarea).
+document.addEventListener('keydown', (e) => {
+  if (ui.applyMode !== 'fast' || !applyPackets.length) return;
+  const tabEl = $('tab-apply');
+  if (!tabEl || !tabEl.classList.contains('on')) return;
+  const tag = (e.target.tagName || '').toLowerCase();
+  if (tag === 'input' || tag === 'textarea' || tag === 'select') return;
+  const pk = applyPackets[applyIndex];
+  if (!pk) return;
+  if (e.key === 'r' || e.key === 'R') navigator.clipboard.writeText(pk.resume).then(() => toast('Resume copied ✓'));
+  else if (e.key === 'l' || e.key === 'L') navigator.clipboard.writeText(pk.letter).then(() => toast('Letter copied ✓'));
+  else if ((e.key === 'o' || e.key === 'O') && pk.item.link) window.open(pk.item.link, '_blank');
+  else if (e.key === 'Enter') { e.preventDefault(); markFastApplied(); }
+});
 
 function renderApply() {
   const jobs = savedTrackerJobs();
@@ -1255,7 +1387,7 @@ function renderApply() {
       <label class="applyjob">
         <input type="checkbox" class="applyChk" data-id="${esc(j.id)}" ${applySelected.has(j.id) ? 'checked' : ''}>
         <span class="applyjob-main">
-          <b>${esc(j.title)}</b> <span class="muted">— ${esc(j.org)}${j.loc ? ', ' + esc(j.loc) : ''}</span><br>
+          <b>${esc(j.title)}</b>${j.remote ? ' <span class="tag" style="background:var(--chip-on);color:#fff">💻 Remote</span>' : ''} <span class="muted">— ${esc(j.org)}${j.loc ? ', ' + esc(j.loc) : ''}</span><br>
           <span class="muted" style="font-size:.8rem">${auto ? 'auto-detected role type: ' : 'role type: '}${esc(kit.label)}
             ${j.link ? ' · <span style="color:var(--sky)">posting link saved</span>' : ' · no posting link saved'}</span>
         </span>
@@ -1280,13 +1412,16 @@ $('applySelectAll').addEventListener('change', (e) => {
   else applySelected.clear();
   renderApply();
 });
+$('applyRemoteOnly').addEventListener('change', renderApply);
 
 function renderApplyResults() {
   const el = $('applyResults');
   if (!applyPackets.length) { el.innerHTML = ''; return; }
   el.innerHTML = applyPackets.map((pk, i) => `
     <div class="packet">
-      <h3>${esc(pk.item.title)} — ${esc(pk.item.org)} <span class="muted" style="font-weight:400">(${esc(pk.kit.label)})</span></h3>
+      <h3>${esc(pk.item.title)} — ${esc(pk.item.org)}
+        ${pk.item.remote ? '<span class="tag" style="background:var(--chip-on);color:#fff">💻 Remote</span>' : ''}
+        <span class="muted" style="font-weight:400">(${esc(pk.kit.label)})</span></h3>
       <label>Tailored resume</label>
       <textarea rows="9" readonly>${esc(pk.resume)}</textarea>
       <label>Cover letter</label>
@@ -1329,10 +1464,9 @@ $('applyRunBtn').addEventListener('click', () => {
   const jobs = savedTrackerJobs().filter((j) => applySelected.has(j.id));
   if (!jobs.length) return toast('Select at least one saved job first');
   applyPackets = jobs.map(generatePacket);
-  renderApplyResults();
-  // Staggered tab-opens, same pattern as "Open all boards" on the Find Jobs tab.
-  jobs.forEach((j, i) => { if (j.link) setTimeout(() => window.open(j.link, '_blank'), i * 150); });
-  toast(`Generated ${applyPackets.length} packet${applyPackets.length === 1 ? '' : 's'} ✓ — personalize, then send`);
+  applyIndex = 0;
+  renderApplyOutput();
+  toast(`Generated ${applyPackets.length} packet${applyPackets.length === 1 ? '' : 's'} ✓ — work through them below`);
 });
 
 $('applyDownloadAll').addEventListener('click', () => {
@@ -1354,6 +1488,7 @@ renderOrgs();
 renderTracker(); // also renders Auto Apply's job list (see end of renderTracker)
 renderTailor();
 renderApply();
+renderApplyMode();
 </script>
 </body>
 </html>
